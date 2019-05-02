@@ -12,4 +12,8 @@ Route::group([
 
     $router->get('/', 'HomeController@index')->name('admin.home');
 
+	$router->post('betOrder/truncate', 'BetOrderController@truncate');
+
+	$router->resource('betOrder', BetOrderController::class);
+
 });
