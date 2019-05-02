@@ -345,5 +345,21 @@ return [
     */
     'extensions' => [
 
+		// Haima: auth-attempts (https://github.com/laravel-admin-extensions/auth-attempts)
+		'auth-attempts' => [
+			// set to false if you want to disable this extension
+			'enable' => false,
+
+			// configuration
+			'maxAttempts'  => 5,
+			'decayMinutes' => 1,
+		],
+
+		// Haima: env-manager (https://github.com/laravel-admin-extensions/env-manager)
+		'env-manager' => [
+			// If the value is set to false, this extension will be disabled
+			'enable' => true,
+		],
+
     ],
 ];
