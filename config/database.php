@@ -50,7 +50,7 @@ return [
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
             'prefix' => '',
-            'strict' => true,
+            'strict' => false,	// Haima: 防止新增 & 更新時 Column cannot be null (有預設值)
             'engine' => null,
         ],
 
