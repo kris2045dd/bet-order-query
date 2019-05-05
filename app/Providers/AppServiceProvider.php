@@ -13,7 +13,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+		// 註冊 model event
+		\App\Models\MActivityRule::observe(\App\Observer\MActivityRuleObserver::class);
     }
 
     /**
