@@ -18,4 +18,6 @@ Route::group([
 	$router->resource('betOrderApply', BetOrderApplyController::class);
 	$router->resource('activity', ActivityController::class);
 
+	$router->resource('settings', SettingController::class);
+
 });
