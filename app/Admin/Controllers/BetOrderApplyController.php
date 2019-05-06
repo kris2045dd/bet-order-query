@@ -223,4 +223,23 @@ class BetOrderApplyController extends Controller
 			->toArray();
 		return array_column($rows, 'name', 'activity_rule_id');
 	}
+
+	// 取得未派彩注單數量
+	public function getUndepositedCount(\Illuminate\Http\Request $request)
+	{
+		$res = ['error' => '', 'data' => '', 'msg' => ''];
+
+		try {
+			$count = \App\Models\DBetOrderApply::where('deposited', 0)->count();
+
+			// Response
+			$res['error'] = -1;
+			$res['data'] = $count;
+		} catch (\Exception $e) {
+			$res['error'] = $e->getCode();
+			$res['msg'] = $e->getMessage();
+		}
+
+		return response()->json($res);
+	}
 }

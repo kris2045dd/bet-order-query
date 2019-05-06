@@ -13,6 +13,7 @@ Route::group([
     $router->get('/', 'HomeController@index')->name('admin.home');
 
 	$router->post('betOrder/truncate', 'BetOrderController@truncate');
+	$router->post('betOrderApply/getUndepositedCount', 'BetOrderApplyController@getUndepositedCount');
 
 	$router->get('bot', 'BotController@index');
 	$router->post('bot/logIn', 'BotController@logIn');

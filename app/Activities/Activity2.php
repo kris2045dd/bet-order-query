@@ -27,7 +27,7 @@ class Activity2 extends ActivityBase
 	<tbody>
 		<tr>
 			<td>≥<span style="color:red;font-weight:bold;">30</span>倍</td>
-			<td style="text-align:center">当局有效投注 * <span style="color:red;font-weight:bold;">3</span></td>
+			<td>当局有效投注 * <span style="color:red;font-weight:bold;">3</span></td>
 			<td rowspan="3" style="vertical-align:middle"><span style="color:red;font-weight:bold;">8888</span>元</td>
 		</tr>
 		<tr>
