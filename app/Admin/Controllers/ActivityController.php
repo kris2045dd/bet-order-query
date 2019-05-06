@@ -179,7 +179,7 @@ class ActivityController extends Controller
 			$html = <<<HTML
 规则格式: {$rule_pattern_sample}
 <br /><br />
-规则说明:<br />
+范例说明:<br />
 {$rule_desc}
 HTML;
 			$form->html($html);

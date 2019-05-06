@@ -14,7 +14,7 @@ class Activity1 extends ActivityBase
 	// 規則樣式範例
 	const RULE_PATTERN_SAMPLE = '{注单尾数}|{可获彩金}|{彩金上限}';
 
-	// 規則說明
+	// 範例說明
 	const RULE_DESC =<<<RULE_DESC
 <table class="table">
 	<thead>
