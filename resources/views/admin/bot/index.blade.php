@@ -68,6 +68,9 @@
 													<span class="input-group-addon"><i class="fa fa-pencil fa-fw"></i></span>
 													<input type="text" id="domain_name" name="domain_name" class="form-control" value="{{ $bot_setting->login_url }}" placeholder="输入 Domain name">
 												</div>
+												<span class="help-block">
+													<i class="fa fa-info-circle"></i>&nbsp;重要: 网址最后要加斜线 &quot;/&quot;
+												</span>
 											</div>
 										</div>
 									</div>

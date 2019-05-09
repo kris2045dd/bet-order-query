@@ -11,6 +11,20 @@
 |
 */
 
+/*
 Route::get('/', function () {
     return view('welcome');
 });
+*/
+
+Route::get('/', 'IndexController@index');
+Route::post('/login', 'IndexController@login');
+Route::get('/logout', 'IndexController@logout');
+Route::post('/getBetOrders', 'IndexController@getBetOrders');
+Route::post('/activityApplying', 'IndexController@activityApplying');
+
+
+/*
+Route::get('/kyo/test', 'KyoController@test');
+Route::post('/kyo/test', 'KyoController@test');
+*/

@@ -86,7 +86,7 @@ class BetOrderApplyController extends Controller
 		$activity_rule_options = $this->getActivityRuleOptions();
 
 		// 由新到舊
-		$grid->model()->orderBy('bet_order_id', 'DESC');
+		$grid->model()->orderBy('bet_order_apply_id', 'DESC');
 
 		// 關閉選擇器
 		$grid->disableRowSelector();
@@ -128,6 +128,7 @@ class BetOrderApplyController extends Controller
 		// 關閉操作按鈕
 		$grid->disableActions();
 
+		//$grid->column('bet_order_apply_id', '编号');
 		$grid->column('bet_order_id', '注单号');
 		$grid->column('username', '帐号');
 		$grid->column('platform', '平台');

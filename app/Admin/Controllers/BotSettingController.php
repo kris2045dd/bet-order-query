@@ -167,7 +167,7 @@ class BotSettingController extends Controller
 		});
 
         $form->url('api_url', 'API URL');
-        $form->url('login_url', '登录 URL');
+        $form->url('login_url', '登录 URL')->help('重要: 网址最后要加斜线 &quot;/&quot;');
         $form->text('login_account', '登录帐号');
         $form->text('login_password', '登录密码');
         $form->switch('auto_deposit', '自动派彩')->states([

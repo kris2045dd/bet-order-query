@@ -210,6 +210,11 @@ class SettingController extends Controller
 				'on'  => ['value' => 1, 'text' => '是', 'color' => 'primary'],
 				'off' => ['value' => 0, 'text' => '否', 'color' => 'default'],
 			]);
+			$form->url('link22', '金沙赌场')->rules('nullable');
+			$form->switch('link22_blank', '另开')->states([
+				'on'  => ['value' => 1, 'text' => '是', 'color' => 'primary'],
+				'off' => ['value' => 0, 'text' => '否', 'color' => 'default'],
+			]);
 			$form->url('link7', '24 在线客服')->rules('nullable');
 			$form->switch('link7_blank', '另开')->states([
 				'on'  => ['value' => 1, 'text' => '是', 'color' => 'primary'],

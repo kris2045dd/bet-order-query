@@ -26,6 +26,11 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')
         //          ->hourly();
+
+		// 清除 7 天前注單資料 (每週三上午 7 點)
+		$schedule->call(function () {
+			(new \App\Tasks\Delete7DaysAgoBetOrders())->run();
+		})->cron('0 7 * * 3')->name('del-bet-orders')->withoutOverlapping();
     }
 
     /**

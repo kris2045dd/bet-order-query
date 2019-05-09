@@ -2,7 +2,7 @@
 
 namespace App\Managers;
 
-class Activity
+class Activity extends ManagerBase
 {
 
 	protected $items = [];

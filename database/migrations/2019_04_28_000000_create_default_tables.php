@@ -37,7 +37,8 @@ SQL;
 		// 建立 注單申請 table
 		$sql = <<<SQL
 CREATE TABLE `d_bet_order_apply` (
-	`bet_order_id` BIGINT UNSIGNED NOT NULL COMMENT 'PK',
+	`bet_order_apply_id` INT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'PK',
+	`bet_order_id` BIGINT UNSIGNED NOT NULL COMMENT '注單 PK',
 	`username` VARCHAR(32) COLLATE utf8mb4_bin NOT NULL COMMENT '帳號',
 	`platform` VARCHAR(8) NOT NULL COMMENT '平台',
 	`game_name` VARCHAR(8) NOT NULL COMMENT '遊戲名稱',
@@ -48,7 +49,8 @@ CREATE TABLE `d_bet_order_apply` (
 	`activity_rule_id` INT UNSIGNED NOT NULL COMMENT '活動規則 PK',
 	`bonus` DECIMAL(10, 2) NOT NULL COMMENT '獎金',
 	`deposited` TINYINT(1) UNSIGNED NOT NULL DEFAULT '0' COMMENT '已上分',
-	PRIMARY KEY (`bet_order_id`),
+	PRIMARY KEY (`bet_order_apply_id`),
+	KEY `idx_bet_order_id` (`bet_order_id`),
 	KEY `idx_username` (`username`)
 )
 COMMENT='注單申請'
