@@ -357,7 +357,7 @@
 					$http.get(base_uri + "/logout")
 						.then(function (response) {
 							{{-- 登出成功 --}}
-							that.username = "";
+							that.username = "", that.bet_orders = [];
 							alert("登出成功.");
 						}, function (response) {
 							alert("登出失败. (" + response.status + ": " + response.statusText + ")");
