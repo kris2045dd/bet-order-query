@@ -127,8 +127,8 @@ class IndexController extends Controller
 
 			$member = $request->session()->get('member');
 
-			// 第一次登入 或 最後更新時間超過 600 秒，便向機器人要新資料，
-			if (!isset($member['last_updated']) || (time() - $member['last_updated'] > 600)) {
+			// 第一次登入 或 最後更新時間超過 60 秒，便向機器人要新資料，
+			if (!isset($member['last_updated']) || (time() - $member['last_updated'] > 60)) {
 				\App\Managers\Bot::getInstance()->fetchMemberBetOrders($member['username']);
 				$request->session()->put('member.last_updated', time());
 			}
@@ -136,7 +136,9 @@ class IndexController extends Controller
 			$bet_orders = \App\Models\DBetOrder::where('username', '=', $member['username'])
 				->where('bet_time', '>=', date('Y-m-d 00:00:00', strtotime('-2 days')))
 				->orderBy('bet_order_id', 'DESC')
+				/* 資料全撈
 				->take(200)
+				*/
 				->get();
 
 			$res['error'] = -1;
