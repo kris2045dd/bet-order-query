@@ -100,20 +100,15 @@
 							<div>一键办理</div>
 						</div>
 
-						<div class="d_default" id="guestshow" ng-hide="body.username">
+						<div class="d_default" ng-hide="body.username">
 							<p>您必须先登入后才可查询，</p>
 							<p>请点选右上方「登录」按钮后，</p>
 							<p>输入帐号及帐户余额后方可查询⋯</p>
 						</div>
-						{{--
-						<div class="d_default" id="membershow" ng-show="body.no_data">
-							<p>当前没有数据可 点击 获取注单数据 (每 xxx 分钟更新)</p>
-							<p>进行查询只能获取到当天的注单 (北美时间)</p>
+
+						<div class="d_default" ng-show="body.username && !body.bet_orders.length">
+							<p>请点击「获取注单数据」来查看最近的注单内容</p>
 						</div>
-						<div class="d_default" id="querynullshow" ng-show="body.no_result">
-							<p>查询近期无符合条件注单</p>
-						</div>
-						--}}
 
 						<div class="d_list" dir-paginate="o in body.bet_orders |
 							tailNo: body.qs.tail_no |
@@ -199,7 +194,9 @@
 		<script>
 		$(function () {
 			var ajax_sent = false,
-				base_uri = "{{ url('/') }}";
+				base_uri = "{{ url('/') }}",
+				totalSec = 600;
+			var countTime;
 
 			{{-- Laravel - CSRF Protection --}}
 			$.ajaxSetup({
@@ -359,6 +356,8 @@
 							{{-- 登出成功 --}}
 							that.username = "", that.bet_orders = [];
 							alert("登出成功.");
+							clearInterval(countTime);
+							totalSec = 600;
 						}, function (response) {
 							alert("登出失败. (" + response.status + ": " + response.statusText + ")");
 						});
@@ -372,20 +371,32 @@
 						that.loginPopup();
 						return;
 					}
+
 					$.ajax({
 						url: base_uri + "/getBetOrders",
 						type: "post",
 						dataType: "json",
+						beforeSend: function(){
+							$('.waiting').fadeIn();
+							ajax_sent = true;
+						},
 						success: function (res) {
 							if (res.error == -1) {
 								{{-- 資料取得成功 --}}
 								that.bet_orders = res.data;
 								$scope.$digest();
+								clearInterval(countTime);
+								countTime = setInterval(countdown, 1000);
 							} else if (res.msg) {
 								alert(res.msg);
+								ajax_sent = false;
 							} else {
 								alert("发生未知的错误.");
+								ajax_sent = false;
 							}
+						},
+						complete: function(){
+							$('.waiting').fadeOut();
 						}
 					});
 				}
@@ -422,7 +433,21 @@
 			angular.bootstrap(document, ["myApp"]);
 			{{-- Angular - End --}}
 
-		})
+
+			function countdown(){
+				$('#getquery').text(totalSec+'秒后...获取注单数据');
+				$('#getquery').addClass('notwork');
+				if(totalSec > 0){
+					totalSec --;
+				}else if(totalSec == 0){
+					clearInterval(countTime);
+					totalSec = 600;
+					$('#getquery').text('获取注单数据');
+					$('#getquery').removeClass('notwork');
+					ajax_sent = false;
+				}
+			}
+		});
 		</script>
 	</body>
 </html>
