@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN" ng-app="jsApp">
 	<head>
 		<meta charset="utf-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
@@ -72,7 +72,11 @@
 							<option value="all">全部平台</option>
 						</select>
 
-						<button id="getquery" class="betdata_btn autoWave" type="button" ng-click="body.getBetOrders()">获取注单数据</button>
+						<button id="getquery" class="betdata_btn autoWave" type="button"
+							ng-click="body.getBetOrders()"
+							ng-disabled="body.countdown_sec"
+							ng-class="{notwork:body.countdown_sec}">
+							<span ng-show="body.countdown_sec"><span ng-bind="body.countdown_sec"></span>秒后...</span>获取注单数据</button>
 
 						<a class="open_sreach_btn" href="javascript:void(0)"></a>
 						<div class="search_bet">
@@ -110,17 +114,16 @@
 							<p>请点击「获取注单数据」来查看最近的注单内容</p>
 						</div>
 
-						<div class="d_list" dir-paginate="o in body.bet_orders |
-							tailNo: body.qs.tail_no |
-							amountGreaterThan: body.qs.amount |
-							itemsPerPage: body.paginator.per_page
+						<div class="d_list" ng-repeat="o in body.filtered_bet_orders |
+							offset: (body.paginator.current - 1) * body.paginator.per_page |
+							limitTo: body.paginator.per_page
 							track by o.bet_order_id">
-							<div>{* o.platform *}</div>
-							<div>{* o.game_name *}</div>
-							<div>{* o.bet_order_id *}</div>
-							<div>{* o.bet_time *}</div>
-							<div>{* o.bet_amount *}</div>
-							<div>{* o.payout_amount *}</div>
+							<div ng-bind="::o.platform"></div>
+							<div ng-bind="::o.game_name"></div>
+							<div ng-bind="::o.bet_order_id"></div>
+							<div ng-bind="::o.bet_time"></div>
+							<div ng-bind="::o.bet_amount"></div>
+							<div ng-bind="::o.payout_amount"></div>
 							<div class="regs"><a href="javascript:void(0)" ng-show="body.applicable(o)" ng-click="body.activityApplying(o)">一键办理</a></div>
 						</div>
 					</div>{{-- .data_table END --}}
@@ -133,10 +136,22 @@
 
 					<nav class="text-center">
 						<ul class="pagination"
-							dir-pagination-controls
-							direction-links="true"
+							uib-pagination
+							{{-- 顯示第一 & 最後 箭頭
 							boundary-links="true"
-							max-size="body.paginator.per_page"></ul>
+							--}}
+							boundary-link-numbers="true"
+							force-ellipses="true"
+							rotate="false"
+							total-items="body.filtered_bet_orders.length"
+							ng-model="body.paginator.current"
+							items-per-page="body.paginator.per_page"
+							max-size="9"
+							previous-text="&lsaquo;"
+							next-text="&rsaquo;"
+							first-text="&laquo;"
+							last-text="&raquo;"
+							ng-show="body.filtered_bet_orders.length"></ul>
 					</nav>
 
 				</div>{{-- .conetnt END --}}
@@ -189,14 +204,11 @@
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.8/angular.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.8/angular-animate.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.8/angular-touch.min.js"></script>
-		<script src="{{ asset('js/front/dirPagination.js') }}"></script>
+		<script src="{{ asset('js/front/ui-bootstrap-tpls-2.5.0.min.js') }}"></script>
 		<script src="{{ asset('js/front/index.js') }}"></script>
 		<script>
-		$(function () {
-			var ajax_sent = false,
-				base_uri = "{{ url('/') }}",
-				totalSec = 600;
-			var countTime;
+		(function () {
+			var ajax_sent = false;
 
 			{{-- Laravel - CSRF Protection --}}
 			$.ajaxSetup({
@@ -222,7 +234,7 @@
 
 
 			{{-- Angular - Start --}}
-			var app = angular.module("myApp", ["angularUtils.directives.dirPagination"]);
+			var app = angular.module("jsApp", ["ui.bootstrap"]);
 
 			app.config([
 				"$interpolateProvider",
@@ -272,38 +284,82 @@
 				};
 			});
 
-			app.filter("myCurrency", function () {
-				return function (input) {
-					input = input || "";
-					return input.replace(/\.00*$/, "");
-				};
-			});
+			app.controller("BodyCtrl", [
+				"$scope",
+				"$http",
+				"$interval",
+				"tailNoFilter",
+				"amountGreaterThanFilter",
+				"username",
+				"BASE_URI",
+				function ($scope, $http, $interval, tailNoFilter, amountGreaterThanFilter, username, BASE_URI) {
 
-			app.controller("BodyCtrl", ["$scope", "$http", function ($scope, $http) {
+				var that = this,
+					timeout_id;
 
-				var that = this;
-
-				this.username = "{{ $member ? $member['username'] : '' }}";
-				this.bet_orders = [];
-				this.paginator = {
+				that.username = username;
+				that.bet_orders = [];
+				that.filtered_bet_orders = [];
+				that.paginator = {
 					current: 1,
 					per_page: 10
 				};
-				this.qs = {
+				that.qs = {
 					amount: "",
 					tail_no: ""
 				};
+				that.countdown_sec = 0;
 
+				function countdown() {
+					if (--that.countdown_sec <= 0) {
+						stopCountdown();
+					}
+				}
 
-				this.loginPopup = function () {
+				function startCountdown(sec) {
+					that.countdown_sec = sec ? sec : 600;
+					timeout_id = $interval(countdown, 1000);
+				}
+
+				function stopCountdown() {
+					that.countdown_sec = 0;
+					timeout_id && $interval.cancel(timeout_id);
+				}
+
+				if (typeof(Storage) !== "undefined") {
+					var countdown_sec = localStorage.getItem("countdown_sec");
+					countdown_sec = parseInt(countdown_sec, 10);
+					if (countdown_sec) {
+						startCountdown(countdown_sec);
+					}
+				}
+
+				window.onbeforeunload = function () {
+					if (typeof(Storage) === "undefined") {
+						return;
+					}
+					localStorage.setItem("countdown_sec", that.countdown_sec);
+				};
+
+				function filterBetOrders() {
+					var filtered_bet_orders = tailNoFilter(that.bet_orders, that.qs.tail_no);
+					filtered_bet_orders = amountGreaterThanFilter(filtered_bet_orders, that.qs.amount);
+					that.filtered_bet_orders = filtered_bet_orders;
+				}
+
+				$scope.$watch(function () {return that.qs;}, function(new_val, old_val) {
+					filterBetOrders();
+				}, true);
+
+				that.loginPopup = function () {
 					$(".login_pop").fadeIn().find("input[name='username']").focus();
 				};
 
-				this.closeLoginPopup = function () {
+				that.closeLoginPopup = function () {
 					$(".login_pop").fadeOut();
 				};
 
-				this.login = function () {
+				that.login = function () {
 					if (ajax_sent) {
 						return;
 					}
@@ -323,7 +379,7 @@
 					}
 
 					$.ajax({
-						url: base_uri + "/login",
+						url: BASE_URI + "/login",
 						type: "post",
 						dataType: "json",
 						data: $(f).serialize(),
@@ -347,23 +403,21 @@
 					});
 				};
 
-				this.logout = function () {
+				that.logout = function () {
 					if (! confirm("是否登出 ?")) {
 						return;
 					}
-					$http.get(base_uri + "/logout")
+					$http.get(BASE_URI + "/logout")
 						.then(function (response) {
 							{{-- 登出成功 --}}
 							that.username = "", that.bet_orders = [];
 							alert("登出成功.");
-							clearInterval(countTime);
-							totalSec = 600;
 						}, function (response) {
 							alert("登出失败. (" + response.status + ": " + response.statusText + ")");
 						});
 				};
 
-				this.getBetOrders = function () {
+				that.getBetOrders = function () {
 					if (ajax_sent) {
 						return;
 					}
@@ -373,45 +427,44 @@
 					}
 
 					$.ajax({
-						url: base_uri + "/getBetOrders",
+						url: BASE_URI + "/getBetOrders",
 						type: "post",
 						dataType: "json",
-						beforeSend: function(){
-							$('.waiting').fadeIn();
+						beforeSend: function () {
 							ajax_sent = true;
+							$(".waiting").fadeIn();
 						},
 						success: function (res) {
 							if (res.error == -1) {
 								{{-- 資料取得成功 --}}
 								that.bet_orders = res.data;
+								filterBetOrders();
+								startCountdown();
 								$scope.$digest();
-								clearInterval(countTime);
-								countTime = setInterval(countdown, 1000);
 							} else if (res.msg) {
 								alert(res.msg);
-								ajax_sent = false;
 							} else {
 								alert("发生未知的错误.");
-								ajax_sent = false;
 							}
 						},
-						complete: function(){
-							$('.waiting').fadeOut();
+						complete: function () {
+							ajax_sent = false;
+							$(".waiting").fadeOut();
 						}
 					});
 				}
 
-				this.applicable = function (bet_order) {
+				that.applicable = function (bet_order) {
 					{{-- TODO: 待調整 --}}
 					return true;
 				};
 
-				this.activityApplying = function (bet_order) {
+				that.activityApplying = function (bet_order) {
 					if (ajax_sent) {
 						return;
 					}
 					$.ajax({
-						url: base_uri + "/activityApplying",
+						url: BASE_URI + "/activityApplying",
 						type: "post",
 						data: {
 							bet_order_id: bet_order.bet_order_id
@@ -430,24 +483,11 @@
 				}
 			}]);
 
-			angular.bootstrap(document, ["myApp"]);
+			app.value("username", "{{ $member ? $member['username'] : '' }}");
+			app.constant("BASE_URI", "{{ url('/') }}");
 			{{-- Angular - End --}}
 
-
-			function countdown(){
-				$('#getquery').text(totalSec+'秒后...获取注单数据');
-				$('#getquery').addClass('notwork');
-				if(totalSec > 0){
-					totalSec --;
-				}else if(totalSec == 0){
-					clearInterval(countTime);
-					totalSec = 600;
-					$('#getquery').text('获取注单数据');
-					$('#getquery').removeClass('notwork');
-					ajax_sent = false;
-				}
-			}
-		});
+		})();
 		</script>
 	</body>
 </html>
