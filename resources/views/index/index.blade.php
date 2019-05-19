@@ -66,7 +66,7 @@
 
 			<div class="main">
 				<div class="content">
-					<form>
+					<form ng-controller="SearchFormCtrl as sf">
 						<label for="game_palt">平台</label>
 						<select id="game_palt">
 							<option value="all">全部平台</option>
@@ -74,9 +74,9 @@
 
 						<button id="getquery" class="betdata_btn autoWave" type="button"
 							ng-click="body.getBetOrders()"
-							ng-disabled="body.countdown_sec"
-							ng-class="{notwork:body.countdown_sec}">
-							<span ng-show="body.countdown_sec"><span ng-bind="body.countdown_sec"></span>秒后...</span>获取注单数据</button>
+							ng-disabled="sf.countdown_sec"
+							ng-class="{notwork:sf.countdown_sec}">
+							<span ng-show="sf.countdown_sec"><span ng-bind="sf.countdown_sec"></span>秒后...</span>获取注单数据</button>
 
 						<a class="open_sreach_btn" href="javascript:void(0)"></a>
 						<div class="search_bet">

@@ -78,15 +78,13 @@
 	app.controller("BodyCtrl", [
 		"$scope",
 		"$http",
-		"$interval",
 		"tailNoFilter",
 		"amountGreaterThanFilter",
 		"username",
 		"BASE_URI",
-		function ($scope, $http, $interval, tailNoFilter, amountGreaterThanFilter, username, BASE_URI) {
+		function ($scope, $http, tailNoFilter, amountGreaterThanFilter, username, BASE_URI) {
 
-		var that = this,
-			timeout_id;
+		var that = this;
 
 		that.username = username;
 		that.bet_orders = [];
@@ -98,44 +96,6 @@
 		that.qs = {
 			amount: "",
 			tail_no: ""
-		};
-		that.countdown_sec = 0;
-
-		function countdown() {
-			if (--that.countdown_sec <= 0) {
-				stopCountdown();
-			}
-		}
-
-		function startCountdown(sec) {
-			that.countdown_sec = sec ? sec : 600;
-			timeout_id = $interval(countdown, 1000);
-		}
-
-		function stopCountdown() {
-			that.countdown_sec = 0;
-			timeout_id && $interval.cancel(timeout_id);
-		}
-
-		if (typeof(Storage) !== "undefined") {
-			var countdown_time = localStorage.getItem("countdown_time");
-			if (countdown_time) {
-				var now = new Date();
-				countdown_time = parseInt(countdown_time, 10);
-				if (countdown_time > now.getTime()) {
-					var countdown_sec = parseInt((countdown_time - now.getTime()) / 1000, 10);
-					startCountdown(countdown_sec);
-				}
-			}
-		}
-
-		window.onbeforeunload = function () {
-			if (typeof(Storage) === "undefined" || !that.countdown_sec) {
-				return;
-			}
-			var d = new Date();
-			d.setTime(d.getTime() + (that.countdown_sec * 1000));
-			localStorage.setItem("countdown_time", d.getTime());
 		};
 
 		function filterBetOrders() {
@@ -236,7 +196,7 @@
 						/* 資料取得成功 */
 						that.bet_orders = res.data;
 						filterBetOrders();
-						startCountdown();
+						$scope.$broadcast("AfterGetData");
 						$scope.$digest();
 					} else if (res.msg) {
 						alert(res.msg);
@@ -278,6 +238,58 @@
 				}
 			});
 		}
+	}]);
+
+	app.controller("SearchFormCtrl", ["$scope", "$interval", function ($scope, $interval) {
+		var that = this,
+			timeout_id;
+
+		that.countdown_sec = 0;
+
+		function countdown() {
+			if (--that.countdown_sec <= 0) {
+				stopCountdown();
+			}
+		}
+
+		function startCountdown(sec) {
+			that.countdown_sec = sec ? sec : 600;
+			timeout_id = $interval(countdown, 1000);
+		}
+
+		function stopCountdown() {
+			that.countdown_sec = 0;
+			timeout_id && $interval.cancel(timeout_id);
+		}
+
+		$scope.$on("AfterGetData", function (event) {
+			startCountdown();
+		});
+
+		$scope.$on("$destroy", function (event) {
+			stopCountdown();
+		});
+
+		if (typeof(Storage) !== "undefined") {
+			var countdown_time = localStorage.getItem("countdown_time");
+			if (countdown_time) {
+				var now = new Date();
+				countdown_time = parseInt(countdown_time, 10);
+				if (countdown_time > now.getTime()) {
+					var countdown_sec = parseInt((countdown_time - now.getTime()) / 1000, 10);
+					startCountdown(countdown_sec);
+				}
+			}
+		}
+
+		window.onbeforeunload = function () {
+			if (typeof(Storage) === "undefined" || !that.countdown_sec) {
+				return;
+			}
+			var d = new Date();
+			d.setTime(d.getTime() + (that.countdown_sec * 1000));
+			localStorage.setItem("countdown_time", d.getTime());
+		};
 	}]);
 	/* Angular - End */
 })();
