@@ -89,6 +89,7 @@
 		that.username = username;
 		that.bet_orders = [];
 		that.filtered_bet_orders = [];
+		that.no_data = false;
 		that.paginator = {
 			current: 1,
 			per_page: 10
@@ -167,7 +168,7 @@
 			$http.get(BASE_URI + "/logout")
 				.then(function (response) {
 					/* 登出成功 */
-					that.username = "", that.bet_orders = [];
+					that.username = "", that.bet_orders = [], that.no_data = false;
 					alert("登出成功.");
 				}, function (response) {
 					alert("登出失败. (" + response.status + ": " + response.statusText + ")");
@@ -195,6 +196,7 @@
 					if (res.error == -1) {
 						/* 資料取得成功 */
 						that.bet_orders = res.data;
+						that.no_data = res.data.length ? false : true;
 						filterBetOrders();
 						$scope.$broadcast("AfterGetData");
 						$scope.$digest();

@@ -110,8 +110,12 @@
 							<p>输入帐号及帐户余额后方可查询⋯</p>
 						</div>
 
-						<div class="d_default" ng-show="body.username && !body.bet_orders.length">
+						<div class="d_default" ng-show="body.username && !body.no_data">
 							<p>请点击「获取注单数据」来查看最近的注单内容</p>
+						</div>
+
+						<div class="d_default" ng-show="body.username && body.no_data">
+							<p>查无最近的注单内容</p>
 						</div>
 
 						<div class="d_list" ng-repeat="o in body.filtered_bet_orders |
