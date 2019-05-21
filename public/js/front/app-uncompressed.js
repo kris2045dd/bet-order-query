@@ -29,9 +29,12 @@
 
 	app.config([
 		"$interpolateProvider",
-		function ($interpolateProvider) {
+		"$compileProvider",
+		function ($interpolateProvider, $compileProvider) {
 			$interpolateProvider.startSymbol("{*");
 			$interpolateProvider.endSymbol("*}");
+			$compileProvider.commentDirectivesEnabled(false);
+			$compileProvider.cssClassDirectivesEnabled(false);
 		}
 	]);
 
