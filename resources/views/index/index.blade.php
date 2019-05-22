@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN" ng-app="jsApp" ng-strict-di>
+<html lang="zh-CN">
 	<head>
 		<meta charset="utf-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
@@ -86,6 +86,9 @@
 							<label for="bet_tail">注单尾数</label>
 							<input id="bet_tail" type="text" placeholder="88888888" ng-model="body.qs.tail_no" />
 
+							<input id="matched" type="checkbox" ng-model="body.qs.matched" />
+							<label for="matched">只显示中奖注单</label>
+
 							{{--
 							<button type="button" class="check_btn">查询</button>
 							--}}
@@ -104,18 +107,18 @@
 							<div>一键办理</div>
 						</div>
 
-						<div class="d_default" ng-hide="body.username">
+						<div class="d_default" ng-show="body.msg == 1">
 							<p>您必须先登入后才可查询，</p>
 							<p>请点选右上方「登录」按钮后，</p>
 							<p>输入帐号及帐户余额后方可查询⋯</p>
 						</div>
 
-						<div class="d_default" ng-show="body.username && !body.no_data">
+						<div class="d_default" ng-show="body.msg == 2">
 							<p>请点击「获取注单数据」来查看最近的注单内容</p>
 						</div>
 
-						<div class="d_default" ng-show="body.username && body.no_data">
-							<p>查无最近的注单内容</p>
+						<div class="d_default" ng-show="body.msg == 3">
+							<p>查无最近的注单</p>
 						</div>
 
 						<div class="d_list" ng-repeat="o in body.filtered_bet_orders |
@@ -216,6 +219,10 @@
 		angular.module("jsApp")
 			.value("username", "{{ $member ? $member['username'] : '' }}")
 			.constant("BASE_URI", "{{ url('/') }}");
+
+		angular.bootstrap(document, ["jsApp"], {
+			strictDi: true
+		});
 		</script>
 	</body>
 </html>

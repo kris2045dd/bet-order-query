@@ -42,7 +42,8 @@ class IndexController extends Controller
 		try {
 			// 檢查
 			if ($request->session()->exists('member')) {
-				throw new \Exception('您已经登入.', 100);
+				// 您已经登入
+				throw new \Exception($request->session()->get('member.username'), 100);
 			}
 
 			$username = $request->input('username');
@@ -143,6 +144,22 @@ class IndexController extends Controller
 
 			$res['error'] = -1;
 			$res['data'] = $bet_orders;
+		} catch (\Exception $e) {
+			$res['error'] = $e->getCode();
+			$res['msg'] = $e->getMessage();
+		}
+
+		return response()->json($res);
+	}
+
+	// 取得 Activities (for 前端使用)
+	public function getActivities(Request $request)
+	{
+		$res = ['error' => '', 'data' => '', 'msg' => ''];
+
+		try {
+			$res['error'] = -1;
+			$res['data'] = \App\Managers\Activity::getInstance()->getActivities();
 		} catch (\Exception $e) {
 			$res['error'] = $e->getCode();
 			$res['msg'] = $e->getMessage();

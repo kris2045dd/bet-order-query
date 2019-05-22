@@ -78,49 +78,135 @@
 		};
 	});
 
+	app.filter("matchedOnly", function () {
+		return function (items, matched_only) {
+			if (! matched_only) {
+				return items;
+			}
+			var filtered = [], i = 0, len = items.length;
+			for (; i < len; i++) {
+				var item = items[i];
+				if (item.matched) {
+					filtered.push(item);
+				}
+			}
+			return filtered;
+		};
+	});
+
+	/* 活動 service */
+	app.service("activityService", activityService);
+	activityService.$inject = ["$http", "BASE_URI"];
+	function activityService($http, BASE_URI) {
+		var activities = [],
+			manager = {
+				activity1: new Activity1(),
+				activity2: new Activity2()
+			};
+
+		$http.get(BASE_URI + "/getActivities")
+			.then(function (response) {
+				activities = response.data.data;
+			});
+
+		this.isMatch = function (bet_order) {
+			var i = 0, len = activities.length;
+			for (; i < len; i++) {
+				var activity_class = manager["activity" + activities[i].activity_id];
+				if (! activity_class) {
+					continue;
+				}
+				var j = 0; j_len = activities[i].rules.length;
+				for (; j < j_len; j++) {
+					if (activity_class.isMatch(bet_order, activities[i].rules[j])) {
+						return true;
+					}
+				}
+			}
+			return false;
+		};
+
+		function Activity1() {
+			this.isMatch = function (bet_order, rule) {
+				// 免費遊戲的注單，不參與活動 (至少 1 元)
+				if (bet_order.bet_amount < 1) {
+					return false;
+				}
+				var r = rule.split("|");
+				reg = new RegExp(r[0] + "$");
+				if (reg.test(bet_order.bet_order_id)) {
+					return true;
+				}
+				return false;
+			};
+		}
+
+		function Activity2() {
+			this.isMatch = function (bet_order, rule) {
+				// 免費遊戲的注單，不參與活動 (至少 1 元)
+				if (bet_order.bet_amount < 1) {
+					return false;
+				}
+				if (bet_order.payout_amount <= 0) {
+					return false;
+				}
+				var r = rule.split("|");
+				if ((bet_order.payout_amount / bet_order.bet_amount) > r[0]) {
+					return true;
+				}
+				return false;
+			};
+		}
+	}
+
 	app.controller("BodyCtrl", [
 		"$scope",
 		"$http",
 		"tailNoFilter",
 		"amountGreaterThanFilter",
+		"matchedOnlyFilter",
+		"activityService",
 		"username",
 		"BASE_URI",
-		function ($scope, $http, tailNoFilter, amountGreaterThanFilter, username, BASE_URI) {
+		function ($scope, $http, tailNoFilter, amountGreaterThanFilter, matchedOnlyFilter, activityService, username, BASE_URI) {
 
-		var that = this;
+		// View Model
+		var vm = this;
 
-		that.username = username;
-		that.bet_orders = [];
-		that.filtered_bet_orders = [];
-		that.no_data = false;
-		that.paginator = {
+		vm.username = username;
+		vm.bet_orders = [];
+		vm.filtered_bet_orders = [];
+		vm.msg = username ? 2 : 1;
+		vm.paginator = {
 			current: 1,
 			per_page: 10
 		};
-		that.qs = {
+		vm.qs = {
 			amount: "",
-			tail_no: ""
+			tail_no: "",
+			matched: false
 		};
 
 		function filterBetOrders() {
-			var filtered_bet_orders = tailNoFilter(that.bet_orders, that.qs.tail_no);
-			filtered_bet_orders = amountGreaterThanFilter(filtered_bet_orders, that.qs.amount);
-			that.filtered_bet_orders = filtered_bet_orders;
+			var filtered_bet_orders = matchedOnlyFilter(vm.bet_orders, vm.qs.matched);
+			filtered_bet_orders = tailNoFilter(filtered_bet_orders, vm.qs.tail_no);
+			filtered_bet_orders = amountGreaterThanFilter(filtered_bet_orders, vm.qs.amount);
+			vm.filtered_bet_orders = filtered_bet_orders;
 		}
 
-		$scope.$watch(function () {return that.qs;}, function(new_val, old_val) {
+		$scope.$watch(function () {return vm.qs;}, function(new_val, old_val) {
 			filterBetOrders();
 		}, true);
 
-		that.loginPopup = function () {
+		vm.loginPopup = function () {
 			$(".login_pop").fadeIn().find("input[name='username']").focus();
 		};
 
-		that.closeLoginPopup = function () {
+		vm.closeLoginPopup = function () {
 			$(".login_pop").fadeOut();
 		};
 
-		that.login = function () {
+		vm.login = function () {
 			if (ajax_sent) {
 				return;
 			}
@@ -145,16 +231,14 @@
 				dataType: "json",
 				data: $(f).serialize(),
 				success: function (res) {
-					if (res.error == -1) {
-						/* 登入成功 */
+					/* 登入成功 or 會員已登入 */
+					if (res.error==-1 || res.error==100) {
 						alert("登录成功.");
 						$(".login_pop").fadeOut();
-						that.username = res.msg;
+						vm.username = res.msg;
+						vm.msg = 2;
 						f.username.value = "", f.balance.value = "";
 						$scope.$digest();
-					} else if (res.error == "100") {
-						/* 會員已登入 */
-						console.log("會員已登入");
 					} else if (res.msg) {
 						alert(res.msg);
 					} else {
@@ -164,26 +248,33 @@
 			});
 		};
 
-		that.logout = function () {
+		vm.logout = function () {
 			if (! confirm("是否登出 ?")) {
 				return;
 			}
 			$http.get(BASE_URI + "/logout")
 				.then(function (response) {
 					/* 登出成功 */
-					that.username = "", that.bet_orders = [], that.no_data = false;
+					vm.username = "", vm.bet_orders = vm.filtered_bet_orders = [], vm.msg = 1;
 					alert("登出成功.");
 				}, function (response) {
 					alert("登出失败. (" + response.status + ": " + response.statusText + ")");
 				});
 		};
 
-		that.getBetOrders = function () {
+		function markMatchedOrder() {
+			var i = 0, len = vm.bet_orders.length;
+			for (; i < len; i++) {
+				vm.bet_orders[i].matched = activityService.isMatch(vm.bet_orders[i]) ? 1 : 0;
+			}
+		}
+
+		vm.getBetOrders = function () {
 			if (ajax_sent) {
 				return;
 			}
-			if (! that.username) {
-				that.loginPopup();
+			if (! vm.username) {
+				vm.loginPopup();
 				return;
 			}
 
@@ -198,10 +289,11 @@
 				success: function (res) {
 					if (res.error == -1) {
 						/* 資料取得成功 */
-						that.bet_orders = res.data;
-						that.no_data = res.data.length ? false : true;
+						vm.bet_orders = res.data;
+						vm.msg = res.data.length ? 0 : 3;
+						markMatchedOrder();
 						filterBetOrders();
-						$scope.$broadcast("AfterGetData");
+						$scope.$broadcast("afterGetData");
 						$scope.$digest();
 					} else if (res.msg) {
 						alert(res.msg);
@@ -216,12 +308,14 @@
 			});
 		}
 
-		that.applicable = function (bet_order) {
-			/* TODO: 待調整 */
-			return true;
+		vm.applicable = function (bet_order) {
+			if (bet_order.matched) {
+				return true;
+			}
+			return false;
 		};
 
-		that.activityApplying = function (bet_order) {
+		vm.activityApplying = function (bet_order) {
 			if (ajax_sent) {
 				return;
 			}
@@ -246,28 +340,29 @@
 	}]);
 
 	app.controller("SearchFormCtrl", ["$scope", "$interval", function ($scope, $interval) {
-		var that = this,
+		// View Model
+		var vm = this,
 			timeout_id;
 
-		that.countdown_sec = 0;
+		vm.countdown_sec = 0;
 
 		function countdown() {
-			if (--that.countdown_sec <= 0) {
+			if (--vm.countdown_sec <= 0) {
 				stopCountdown();
 			}
 		}
 
 		function startCountdown(sec) {
-			that.countdown_sec = sec ? sec : 600;
+			vm.countdown_sec = sec ? sec : 600;
 			timeout_id = $interval(countdown, 1000);
 		}
 
 		function stopCountdown() {
-			that.countdown_sec = 0;
+			vm.countdown_sec = 0;
 			timeout_id && $interval.cancel(timeout_id);
 		}
 
-		$scope.$on("AfterGetData", function (event) {
+		$scope.$on("afterGetData", function (event) {
 			startCountdown();
 		});
 
@@ -288,11 +383,11 @@
 		}
 
 		window.onbeforeunload = function () {
-			if (typeof(Storage) === "undefined" || !that.countdown_sec) {
+			if (typeof(Storage) === "undefined" || !vm.countdown_sec) {
 				return;
 			}
 			var d = new Date();
-			d.setTime(d.getTime() + (that.countdown_sec * 1000));
+			d.setTime(d.getTime() + (vm.countdown_sec * 1000));
 			localStorage.setItem("countdown_time", d.getTime());
 		};
 	}]);

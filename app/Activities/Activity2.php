@@ -50,6 +50,11 @@ RULE_DESC;
 	*/
 	public function match(\App\Models\DBetOrder $bet_order, \App\Models\MActivityRule $activity_rule)
 	{
+		// 免費遊戲的注單，不參與活動 (至少 1 元)
+		if ($bet_order->bet_amount < 1) {
+			return ['matched' => 0, 'bonus' => 0];
+		}
+
 		if ($bet_order->payout_amount <= 0) {
 			return ['matched' => 0, 'bonus' => 0];
 		}

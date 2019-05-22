@@ -21,6 +21,7 @@ Route::get('/', 'IndexController@index');
 Route::post('/login', 'IndexController@login');
 Route::get('/logout', 'IndexController@logout');
 Route::post('/getBetOrders', 'IndexController@getBetOrders');
+Route::get('/getActivities', 'IndexController@getActivities');
 Route::post('/activityApplying', 'IndexController@activityApplying');
 
 

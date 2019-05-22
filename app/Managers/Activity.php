@@ -52,4 +52,23 @@ class Activity extends ManagerBase
 		return new $activity_class();
 	}
 
+	// 取得 Activities (for 前端使用)
+	public function getActivities()
+	{
+		$activities = [];
+
+		foreach ($this->items as $item) {
+			$activity = [
+				'activity_id' => $item['activity_id'],
+				'rules' => [],
+			];
+			foreach ($item['rules'] as $rule) {
+				$activity['rules'][] = $rule->rule;
+			}
+			$activities[] = $activity;
+		}
+
+		return $activities;
+	}
+
 }
