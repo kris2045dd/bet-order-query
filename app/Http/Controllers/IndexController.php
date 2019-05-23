@@ -229,14 +229,43 @@ class IndexController extends Controller
 				$orders[] = $order;
 			}
 
-			/* 是否自動派彩
+			// 是否自動上分 (派彩)
 			$bot_setting = \App\Models\MBotSetting::findOrFail(1);
 			if ($bot_setting->auto_deposit) {
+				$api = rtrim($bot_setting->api_url, '/') . '/deposit';
 				foreach ($orders as $order) {
-					// TODO: 待實作
+					$activity = \App\Models\MActivity::findOrFail($order->activity_id);
+
+					// 呼叫上分 API
+					$client = new \GuzzleHttp\Client();
+					$response = $client->request('POST', $api, [
+						'form_params' => [
+							'username' => $order->username,
+							'amount' => $order->bonus,
+							// 長度限制 128
+							'reason' => str_limit($activity->name . '(' . $activity->m_activity_rule()->findOrFail($order->activity_rule_id)->name . ')', 125, '...'),
+						]
+					]);
+
+					// 檢查
+					if ($response->getStatusCode() != 200) {
+						throw new \Exception('GuzzleHttp request failed. (' . $response->getStatusCode() . ')', 104);
+					}
+
+					$result = json_decode($response->getBody(), true);
+					if (json_last_error() !== \JSON_ERROR_NONE) {
+						throw new \Exception('JSON decode failed.', 105);
+					}
+
+					if (!isset($result['state']) || $result['state']!=0) {
+						throw new \Exception('上分失败.' . (empty($result['message']) ? '' : " ({$result['message']})"));
+					}
+
+					// 成功 (更新注單上分狀態)
+					$order->deposited = 1;
+					$order->save();
 				}
 			}
-			*/
 
 			$res['error'] = -1;
 		} catch (\Exception $e) {

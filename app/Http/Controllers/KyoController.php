@@ -11,6 +11,22 @@ class KyoController extends Controller
 
 	public function test(Request $request)
 	{
+		/* One to many
+		$activity = \App\Models\MActivity::findOrFail(1);
+		return $activity->name . " (" . $activity->m_activity_rule()->findOrFail(5)->name . ")";
+		*/
+
+		/* One to many (Inverse)
+		$activity_rule = \App\Models\MActivityRule::findOrFail(5);
+		return $activity_rule->m_activity->name . " ({$activity_rule->name})";
+		*/
+
+		/* 字串長度限制
+		$str = '1234567890';
+		$limit = 5;
+		str_limit($str, $limit, '...');	// 12345... (strlen = 8)
+		*/
+
 		/*
 		$remote_ip = '103.71.50.199';
 		$util = new \App\Helper\Util();
