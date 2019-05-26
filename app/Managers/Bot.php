@@ -47,7 +47,7 @@ class Bot extends ManagerBase
 			\Illuminate\Support\Facades\DB::beginTransaction();
 			*/
 
-			$bet_orders = $result['message'];
+			$bet_orders = $result['data'];
 			$arr_obj = new \ArrayObject($bet_orders);
 			$iterator = $arr_obj->getIterator();
 			while ($chunk = $this->getChunk($iterator)) {
