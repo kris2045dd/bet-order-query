@@ -68,8 +68,28 @@
 				<div class="content">
 					<form ng-controller="SearchFormCtrl as sf">
 						<label for="game_palt">平台</label>
-						<select id="game_palt">
-							<option value="all">全部平台</option>
+						<select id="game_palt" ng-model="body.qs.platform">
+							<option value="">全部平台</option>
+							<option value="BB电子">BB电子</option>
+							<option value="MG电子">MG电子</option>
+							<option value="GNS电子">GNS电子</option>
+							<option value="ISB电子">ISB电子</option>
+							<option value="PT电子">PT电子</option>
+							<option value="HB电子">HB电子</option>
+							<option value="PP电子">PP电子</option>
+							<option value="JDB电子">JDB电子</option>
+							<option value="大满贯电子">大满贯电子</option>
+							<option value="RT电子">RT电子</option>
+							<option value="SG电子">SG电子</option>
+							<option value="SW电子">SW电子</option>
+							<option value="BNG电子">BNG电子</option>
+							<option value="WM电子">WM电子</option>
+							<option value="Gti电子">Gti电子</option>
+							<option value="CQ9电子">CQ9电子</option>
+							<option value="KA电子">KA电子</option>
+							<option value="AW电子">AW电子</option>
+							<option value="FG电子">FG电子</option>
+							<option value="IN电子">IN电子</option>
 						</select>
 
 						<button id="getquery" class="betdata_btn autoWave" type="button"

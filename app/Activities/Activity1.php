@@ -4,6 +4,10 @@ namespace App\Activities;
 
 /**
 	電子五重曲 - 老虎機 300 倍彩金
+	參與遊戲: BB電子老虎機系列
+
+	參考:
+		http://7182004.com/
 */
 class Activity1 extends ActivityBase
 {
@@ -52,6 +56,11 @@ RULE_DESC;
 	*/
 	public function match(\App\Models\DBetOrder $bet_order, \App\Models\MActivityRule $activity_rule)
 	{
+		// BB電子限定
+		if ($bet_order->platform != 'BB电子') {
+			return ['matched' => 0, 'bonus' => 0];
+		}
+
 		// 免費遊戲的注單，不參與活動 (至少 1 元)
 		if ($bet_order->bet_amount < 1) {
 			return ['matched' => 0, 'bonus' => 0];

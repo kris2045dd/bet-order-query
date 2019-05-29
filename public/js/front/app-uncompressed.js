@@ -45,6 +45,22 @@
 		};
 	});
 
+	app.filter("platform", function () {
+		return function (items, platform) {
+			if (platform == "") {
+				return items;
+			}
+			var filtered = [], i = 0, len = items.length;
+			for (; i < len; i++) {
+				var item = items[i];
+				if (item.platform == platform) {
+					filtered.push(item);
+				}
+			}
+			return filtered;
+		};
+	});
+
 	app.filter("tailNo", function () {
 		return function (items, no) {
 			if (no == "") {
@@ -126,8 +142,19 @@
 			return false;
 		};
 
+		/*
+			電子五重曲 - 老虎機 300 倍彩金
+			參與遊戲: BB電子老虎機系列
+
+			參考:
+				http://7182004.com/
+		*/
 		function Activity1() {
 			this.isMatch = function (bet_order, rule) {
+				// BB電子限定
+				if (bet_order.platform != "BB电子") {
+					return false;
+				}
 				// 免費遊戲的注單，不參與活動 (至少 1 元)
 				if (bet_order.bet_amount < 1) {
 					return false;
@@ -141,8 +168,19 @@
 			};
 		}
 
+		/*
+			電子六重曲 - 畅享赔率彩金
+			註: BBIN電子不參與此項優惠
+
+			參考:
+				http://7182004.com/
+		*/
 		function Activity2() {
 			this.isMatch = function (bet_order, rule) {
+				// BBIN電子 不參與此項活動
+				if (bet_order.platform == "BB电子") {
+					return false;
+				}
 				// 免費遊戲的注單，不參與活動 (至少 1 元)
 				if (bet_order.bet_amount < 1) {
 					return false;
@@ -162,13 +200,14 @@
 	app.controller("BodyCtrl", [
 		"$scope",
 		"$http",
+		"platformFilter",
 		"tailNoFilter",
 		"amountGreaterThanFilter",
 		"matchedOnlyFilter",
 		"activityService",
 		"username",
 		"BASE_URI",
-		function ($scope, $http, tailNoFilter, amountGreaterThanFilter, matchedOnlyFilter, activityService, username, BASE_URI) {
+		function ($scope, $http, platformFilter, tailNoFilter, amountGreaterThanFilter, matchedOnlyFilter, activityService, username, BASE_URI) {
 
 		// View Model
 		var vm = this;
@@ -182,6 +221,7 @@
 			per_page: 10
 		};
 		vm.qs = {
+			platform: "",
 			amount: "",
 			tail_no: "",
 			matched: false
@@ -190,6 +230,7 @@
 		function filterBetOrders() {
 			var filtered_bet_orders = matchedOnlyFilter(vm.bet_orders, vm.qs.matched);
 			filtered_bet_orders = tailNoFilter(filtered_bet_orders, vm.qs.tail_no);
+			filtered_bet_orders = platformFilter(filtered_bet_orders, vm.qs.platform);
 			filtered_bet_orders = amountGreaterThanFilter(filtered_bet_orders, vm.qs.amount);
 			vm.filtered_bet_orders = filtered_bet_orders;
 		}
@@ -339,7 +380,7 @@
 		}
 	}]);
 
-	app.controller("SearchFormCtrl", ["$scope", "$interval", function ($scope, $interval) {
+	app.controller("SearchFormCtrl", ["$scope", function ($scope) {
 		// View Model
 		var vm = this,
 			timeout_id;
@@ -354,12 +395,15 @@
 
 		function startCountdown(sec) {
 			vm.countdown_sec = sec ? sec : 600;
-			timeout_id = $interval(countdown, 1000);
+			timeout_id = setInterval(function () {
+				countdown();
+				$scope.$digest();
+			}, 1000);
 		}
 
 		function stopCountdown() {
 			vm.countdown_sec = 0;
-			timeout_id && $interval.cancel(timeout_id);
+			timeout_id && clearInterval(timeout_id);
 		}
 
 		$scope.$on("afterGetData", function (event) {

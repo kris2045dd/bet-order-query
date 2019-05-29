@@ -243,7 +243,11 @@ class IndexController extends Controller
 							'username' => $order->username,
 							'amount' => $order->bonus,
 							// 長度限制 128
-							'reason' => str_limit($activity->name . '(' . $activity->m_activity_rule()->findOrFail($order->activity_rule_id)->name . ')', 125, '...'),
+							'reason' => str_limit(
+								$activity->name . ' : ' . $activity->m_activity_rule()->findOrFail($order->activity_rule_id)->name . " (注单号: {$order->bet_order_id})",
+								125,
+								'...'
+							),
 						]
 					]);
 

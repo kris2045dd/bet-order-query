@@ -4,6 +4,10 @@ namespace App\Activities;
 
 /**
 	電子六重曲 - 畅享赔率彩金
+	註: BBIN電子不參與此項優惠
+
+	參考:
+		http://7182004.com/
 */
 class Activity2 extends ActivityBase
 {
@@ -50,6 +54,11 @@ RULE_DESC;
 	*/
 	public function match(\App\Models\DBetOrder $bet_order, \App\Models\MActivityRule $activity_rule)
 	{
+		// BBIN電子 不參與此項活動
+		if ($bet_order->platform == 'BB电子') {
+			return ['matched' => 0, 'bonus' => 0];
+		}
+
 		// 免費遊戲的注單，不參與活動 (至少 1 元)
 		if ($bet_order->bet_amount < 1) {
 			return ['matched' => 0, 'bonus' => 0];
