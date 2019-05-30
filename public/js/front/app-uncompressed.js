@@ -386,6 +386,9 @@
 			timeout_id;
 
 		vm.countdown_sec = 0;
+		vm.toggleSearchBet = function () {
+			$(".search_bet").slideToggle();
+		};
 
 		function countdown() {
 			if (--vm.countdown_sec <= 0) {

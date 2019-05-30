@@ -98,7 +98,7 @@
 							ng-class="{notwork:sf.countdown_sec}">
 							<span ng-show="sf.countdown_sec"><span ng-bind="sf.countdown_sec"></span>秒后...</span>获取注单数据</button>
 
-						<a class="open_sreach_btn" href="javascript:void(0)"></a>
+						<a class="open_sreach_btn" href="javascript:void(0)" ng-click="sf.toggleSearchBet()"></a>
 						<div class="search_bet">
 							<label for="bet_dollar">注单<span>(仅限1元以上)</span></label>
 							<input id="bet_dollar" type="text" placeholder="1" ng-model="body.qs.amount" />
@@ -155,11 +155,9 @@
 						</div>
 					</div>{{-- .data_table END --}}
 
-					{{--
-					<p class="totalBetNum" style="display: none">
-						搜寻单数：<span id="searchcount">0</span> / 总注单数：<span id="resultall">0</span>
+					<p class="totalBetNum" ng-show="body.msg == 0">
+						总注单数：<span id="resultall" ng-bind="body.filtered_bet_orders.length"></span>
 					</p>
-					--}}
 
 					<nav class="text-center">
 						<ul class="pagination"
