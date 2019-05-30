@@ -233,22 +233,26 @@ class IndexController extends Controller
 			$bot_setting = \App\Models\MBotSetting::findOrFail(1);
 			if ($bot_setting->auto_deposit) {
 				$api = rtrim($bot_setting->api_url, '/') . '/deposit';
+				$bot_secret = env('BOT_SECRET', '');
 				foreach ($orders as $order) {
 					$activity = \App\Models\MActivity::findOrFail($order->activity_id);
+
+					$form_params = [
+						'username' => $order->username,
+						'amount' => $order->bonus,
+						// 長度限制 128
+						'reason' => str_limit(
+							$activity->name . ' : ' . $activity->m_activity_rule()->findOrFail($order->activity_rule_id)->name . " (注单号: {$order->bet_order_id})",
+							125,
+							'...'
+						),
+					];
+					$form_params['token'] = strtoupper(md5("{$form_params['username']}|{$form_params['amount']}|{$form_params['reason']}|{$bot_secret}"));
 
 					// 呼叫上分 API
 					$client = new \GuzzleHttp\Client();
 					$response = $client->request('POST', $api, [
-						'form_params' => [
-							'username' => $order->username,
-							'amount' => $order->bonus,
-							// 長度限制 128
-							'reason' => str_limit(
-								$activity->name . ' : ' . $activity->m_activity_rule()->findOrFail($order->activity_rule_id)->name . " (注单号: {$order->bet_order_id})",
-								125,
-								'...'
-							),
-						]
+						'form_params' => $form_params
 					]);
 
 					// 檢查
