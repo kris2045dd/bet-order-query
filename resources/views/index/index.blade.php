@@ -214,6 +214,7 @@
 
 		{{-- waiting --}}
 		<div class="waiting">
+			<p></p>
 			<div class="loading-ani-icon-1">
 				<div></div><div></div><div></div>
 				<div></div><div></div><div></div>
@@ -231,7 +232,8 @@
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.8/angular-touch.min.js"></script>
 		<script src="{{ asset('js/front/ui-bootstrap-tpls-2.5.0.min.js') }}"></script>
 		<script src="{{ asset('js/front/index.js') }}"></script>
-		<script src="{{ asset('js/front/app.js') }}"></script>
+		<!-- <script src="{{ asset('js/front/app.js') }}"></script> -->
+		<script src="{{ asset('js/front/app-uncompressed.js') }}"></script>
 		<script>
 		{{-- Angular - Setting --}}
 		angular.module("jsApp")

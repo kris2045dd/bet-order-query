@@ -1,0 +1,135 @@
+$img: "/images/"
+$img_m: "/images/mobile/"
+
+// $t: "?t=0804"
+
+// 思源黑體 Noto Sans TC
+// @import url(https://fonts.googleapis.com/earlyaccess/notosanstc.css)
+
+//仿宋體 cwTeXFangSong
+// @import url(https://fonts.googleapis.com/earlyaccess/cwtexfangsong.css)
+
+// 黑體 cwTeXHei
+// @import url(https://fonts.googleapis.com/earlyaccess/cwtexhei.css)
+
+//楷體 cwTeXKai
+// @import url(https://fonts.googleapis.com/earlyaccess/cwtexkai.css)
+
+//明體 cwTeXMing
+// @import url(https://fonts.googleapis.com/earlyaccess/cwtexming.css)
+
+//圓體 cwTeXYen
+// @import url(https://fonts.googleapis.com/earlyaccess/cwtexyen.css)
+
+// 思源简体 Noto Sans SC Sliced
+// @import url(https://fonts.googleapis.com/earlyaccess/notosansscsliced.css)
+
+
+%clear
+	content: ''
+	display: block
+	clear: both
+
+%appearance_none
+	-webkit-appearance: none
+	-moz-appearance: none
+	-ms-appearance: none
+	outline-style: none
+	border: 0
+	+border-radius(0)
+
+
+@mixin bg($pic)
+	background: url(#{$img}#{$pic}) no-repeat
+	width: image-width("#{$img}#{$pic}")  
+	height: image-height("#{$img}#{$pic}")
+
+
+@mixin rwd($point,$num:null)
+	@if $point == pc
+		@media only screen and (max-width: 1200px)
+			@content
+	@else if $point == pad
+		@media only screen and (max-width: 992px)
+			@content
+	@else if $point == mobile
+		@media only screen and (max-width: 768px)
+			@content
+	@else if $point == custom
+		@media only screen and (max-width: $num)
+			@content
+
+@mixin rwdH($num:null)
+	@media only screen and (max-height: $num)
+		@content
+
+
+@mixin text-hide
+	text-indent: 100%
+	white-space: nowrap
+	overflow: hidden
+	font-size: 0
+
+@mixin text-show
+	text-indent: 0
+	white-space: normal
+	overflow: visible
+	font-size: medium
+
+
+@mixin poa($top:null,$right:null,$bottom:null,$left:null,$zindex:null)
+	position: absolute
+	top: $top
+	right: $right
+	bottom: $bottom
+	left: $left
+	z-index: $zindex
+	@content
+
+@mixin por($top:null,$right:null,$bottom:null,$left:null,$zindex:null)
+	position: relative
+	top: $top
+	right: $right
+	bottom: $bottom
+	left: $left
+	z-index: $zindex
+	@content
+
+@mixin pof($top:null,$right:null,$bottom:null,$left:null,$zindex:null)
+	position: fixed
+	top: $top
+	right: $right
+	bottom: $bottom
+	left: $left
+	z-index: $zindex
+	@content
+
+// @mixin grid($cloum_number,$cloum_gutter)  
+// 	//總寬度 -    欄位間距  *    (欄位數量-1)      /   欄位數量  
+// 	width: ($width - $cloum_gutter*($cloum_number - 1) ) / $cloum_number  
+// 	margin-right: $cloum_gutter  
+// 	-webkit-box-sizing: border-box  
+// 	-moz-box-sizing: border-box  
+// 	box-sizing: border-box  
+//   //   欄位數量  
+//   &:nth-child(#{$cloum_number}n)  
+// 		margin-right: 0 
+
+
+@mixin border ($style,  $sides...)
+	@if ($style != "")
+		@if ($sides == "")
+			border: $style
+		@else
+			@each $side in $sides
+				@if ($side == 'top' or $side == 'right' or $side == 'bottom' or $side == 'left')
+					border-#{$side}: $style
+// +border(1px solid #22222,bottom,right)
+
+
+@mixin text-overflow ($num)
+	overflow: hidden
+	text-overflow: ellipsis
+	display: -webkit-box
+	-webkit-line-clamp: $num
+	-webkit-box-orient: vertical

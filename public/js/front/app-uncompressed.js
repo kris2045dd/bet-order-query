@@ -1,6 +1,11 @@
 (function () {
 	var ajax_sent = false;
 
+	function showloading(wording){
+		$(".waiting p").html(wording);
+		$(".waiting").fadeIn();
+	}
+
 	/* Laravel - CSRF Protection */
 	$.ajaxSetup({
 		headers: {
@@ -271,6 +276,10 @@
 				type: "post",
 				dataType: "json",
 				data: $(f).serialize(),
+				beforeSend: function () {
+					ajax_sent = true;
+					showloading('登录中...');
+				},
 				success: function (res) {
 					/* 登入成功 or 會員已登入 */
 					if (res.error==-1 || res.error==100) {
@@ -285,6 +294,10 @@
 					} else {
 						alert("发生未知的错误.");
 					}
+				},
+				complete: function () {
+					ajax_sent = false;
+					$(".waiting").fadeOut();
 				}
 			});
 		};
@@ -325,7 +338,7 @@
 				dataType: "json",
 				beforeSend: function () {
 					ajax_sent = true;
-					$(".waiting").fadeIn();
+					showloading('注单数据获取中，请耐心等待...');
 				},
 				success: function (res) {
 					if (res.error == -1) {
@@ -367,6 +380,10 @@
 					bet_order_id: bet_order.bet_order_id
 				},
 				dataType: "json",
+				beforeSend: function () {
+					ajax_sent = true;
+					showloading('申请办理中，请耐心等待...');
+				},
 				success: function (res) {
 					if (res.error == -1) {
 						alert("申请成功.");
@@ -375,6 +392,10 @@
 					} else {
 						alert("发生未知的错误.");
 					}
+				},
+				complete: function () {
+					ajax_sent = false;
+					$(".waiting").fadeOut();
 				}
 			});
 		}
