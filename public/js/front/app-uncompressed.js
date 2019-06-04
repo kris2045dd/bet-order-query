@@ -83,10 +83,10 @@
 			if (isNaN(amount) || amount=="") {
 				return items;
 			}
-			var filtered = [], i = 0, len = items.length;
+			var filtered = [], i = 0, len = items.length, amount = parseFloat(amount);
 			for (; i < len; i++) {
-				var item = items[i];
-				if (item.bet_amount >= amount) {
+				var item = items[i], bet_amount = parseFloat(item.bet_amount);
+				if (bet_amount >= amount) {
 					filtered.push(item);
 				}
 			}
