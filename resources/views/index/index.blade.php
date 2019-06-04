@@ -151,7 +151,10 @@
 							<div ng-bind="::o.bet_time"></div>
 							<div ng-bind="::o.bet_amount"></div>
 							<div ng-bind="::o.payout_amount"></div>
-							<div class="regs"><a href="javascript:void(0)" ng-show="body.applicable(o)" ng-click="body.activityApplying(o)">一键办理</a></div>
+							<div class="regs"><a href="javascript:void(0)"
+								ng-if="body.applicable(o)"
+								ng-click="body.activityApplying(o)"
+								ng-bind="o.deposited | appliedStatus"></a></div>
 						</div>
 					</div>{{-- .data_table END --}}
 
@@ -232,8 +235,7 @@
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.8/angular-touch.min.js"></script>
 		<script src="{{ asset('js/front/ui-bootstrap-tpls-2.5.0.min.js') }}"></script>
 		<script src="{{ asset('js/front/index.js') }}"></script>
-		<!-- <script src="{{ asset('js/front/app.js') }}"></script> -->
-		<script src="{{ asset('js/front/app-uncompressed.js') }}"></script>
+		<script src="{{ asset('js/front/app.js') }}"></script>
 		<script>
 		{{-- Angular - Setting --}}
 		angular.module("jsApp")

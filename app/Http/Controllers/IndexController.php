@@ -130,17 +130,30 @@ class IndexController extends Controller
 
 			// 第一次登入 或 最後更新時間超過 60 秒，便向機器人要新資料，
 			if (!isset($member['last_updated']) || (time() - $member['last_updated'] > 60)) {
-				\App\Managers\Bot::getInstance()->fetchMemberBetOrders($member['username']);
+				try {
+					\App\Managers\Bot::getInstance()->fetchMemberBetOrders($member['username']);
+				} catch (\Exception $e) {
+					throw new \Exception('注单数据获取失败.');
+				}
 				$request->session()->put('member.last_updated', time());
 			}
 
-			$bet_orders = \App\Models\DBetOrder::where('username', '=', $member['username'])
-				->where('bet_time', '>=', date('Y-m-d 00:00:00', strtotime('-2 days')))
-				->orderBy('bet_order_id', 'DESC')
-				/* 資料全撈
-				->take(200)
-				*/
-				->get();
+			$sql =
+				"SELECT
+					o.*,
+					oa.deposited
+				FROM d_bet_order AS o
+					LEFT JOIN d_bet_order_apply AS oa USING(bet_order_id)
+				WHERE
+					o.username =:username
+					AND o.bet_time >= :bet_time
+				GROUP BY o.bet_order_id
+				ORDER BY o.bet_order_id DESC
+				#LIMIT 200";
+			$bet_orders = \Illuminate\Support\Facades\DB::select($sql, [
+				'username' => $member['username'],
+				'bet_time' => date('Y-m-d 00:00:00', strtotime('-2 days')),
+			]);
 
 			$res['error'] = -1;
 			$res['data'] = $bet_orders;
@@ -171,7 +184,7 @@ class IndexController extends Controller
 	// 活動申請
 	public function activityApplying(Request $request)
 	{
-		$res = ['error' => '', 'msg' => ''];
+		$res = ['error' => '', 'data' => '', 'msg' => ''];
 
 		try {
 			if (! $request->session()->exists('member')) {
@@ -196,9 +209,11 @@ class IndexController extends Controller
 			if ($applied_bet_orders->isNotEmpty()) {
 				foreach ($applied_bet_orders as $v) {
 					if ($v->deposited) {
+						$res['data'] = 1;
 						throw new \Exception('注单已派彩.');
 					}
 				}
+				$res['data'] = 0;
 				throw new \Exception('注单处理中.');
 			}
 
@@ -228,6 +243,9 @@ class IndexController extends Controller
 
 				$orders[] = $order;
 			}
+
+			$res['data'] = 0;
+
 
 			// 是否自動上分 (派彩)
 			$bot_setting = \App\Models\MBotSetting::findOrFail(1);
@@ -272,6 +290,8 @@ class IndexController extends Controller
 					// 成功 (更新注單上分狀態)
 					$order->deposited = 1;
 					$order->save();
+
+					$res['data'] = 1;
 				}
 			}
 

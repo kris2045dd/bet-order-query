@@ -1,11 +1,6 @@
 (function () {
 	var ajax_sent = false;
 
-	function showloading(wording){
-		$(".waiting p").html(wording);
-		$(".waiting").fadeIn();
-	}
-
 	/* Laravel - CSRF Protection */
 	$.ajaxSetup({
 		headers: {
@@ -115,6 +110,19 @@
 		};
 	});
 
+	app.filter("appliedStatus", function () {
+		return function (deposited) {
+			switch (deposited) {
+				case 0:
+					return "已申请";
+				case 1:
+					return "已派彩";
+				default:
+					return "一键办理";
+			}
+		};
+	});
+
 	/* 活動 service */
 	app.service("activityService", activityService);
 	activityService.$inject = ["$http", "BASE_URI"];
@@ -156,7 +164,7 @@
 		*/
 		function Activity1() {
 			this.isMatch = function (bet_order, rule) {
-				// BB電子限定
+				// BB電子 限定
 				if (bet_order.platform != "BB电子") {
 					return false;
 				}
@@ -278,13 +286,13 @@
 				data: $(f).serialize(),
 				beforeSend: function () {
 					ajax_sent = true;
-					showloading('登录中...');
+					showLoading("登录中...");
 				},
 				success: function (res) {
 					/* 登入成功 or 會員已登入 */
 					if (res.error==-1 || res.error==100) {
 						alert("登录成功.");
-						$(".login_pop").fadeOut();
+						vm.closeLoginPopup();
 						vm.username = res.msg;
 						vm.msg = 2;
 						f.username.value = "", f.balance.value = "";
@@ -296,8 +304,8 @@
 					}
 				},
 				complete: function () {
+					closeLoading();
 					ajax_sent = false;
-					$(".waiting").fadeOut();
 				}
 			});
 		};
@@ -338,7 +346,7 @@
 				dataType: "json",
 				beforeSend: function () {
 					ajax_sent = true;
-					showloading('注单数据获取中，请耐心等待...');
+					showLoading("注单数据获取中，请耐心等待...");
 				},
 				success: function (res) {
 					if (res.error == -1) {
@@ -356,8 +364,8 @@
 					}
 				},
 				complete: function () {
+					closeLoading();
 					ajax_sent = false;
-					$(".waiting").fadeOut();
 				}
 			});
 		}
@@ -382,7 +390,7 @@
 				dataType: "json",
 				beforeSend: function () {
 					ajax_sent = true;
-					showloading('申请办理中，请耐心等待...');
+					showLoading("申请办理中，请耐心等待...");
 				},
 				success: function (res) {
 					if (res.error == -1) {
@@ -392,12 +400,36 @@
 					} else {
 						alert("发生未知的错误.");
 					}
+					if (res.data !== "") {
+						setBetOrderApplied(bet_order, res.data);
+						$scope.$digest();
+					}
 				},
 				complete: function () {
+					closeLoading();
 					ajax_sent = false;
-					$(".waiting").fadeOut();
 				}
 			});
+		}
+
+		function setBetOrderApplied(bet_order, applied) {
+			bet_order.deposited = applied;
+			var i = 0, len = vm.bet_orders.length;
+			for (; i < len; i++) {
+				var o = vm.bet_orders[i];
+				if (o.bet_order_id == bet_order.bet_order_id) {
+					o.deposited = applied;
+				}
+			}
+		}
+
+		function showLoading(wording) {
+			$(".waiting p").html(wording);
+			$(".waiting").fadeIn();
+		}
+
+		function closeLoading() {
+			$(".waiting").fadeOut();
 		}
 	}]);
 
