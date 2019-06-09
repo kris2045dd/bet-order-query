@@ -481,11 +481,11 @@
 			localStorage.setItem(getCountdownItemKey(), d.getTime());
 		}
 
-		$scope.$on("afterLogin", function (event, username) {
-			// 檢查需不需要倒數
-			_username = username;
-			var key = getCountdownItemKey(),
-				countdown_time = localStorage.getItem(key);
+		function runCountdown() {
+			if (typeof(Storage) == "undefined") {
+				return;
+			}
+			var countdown_time = localStorage.getItem(getCountdownItemKey());
 			if (countdown_time) {
 				var now = new Date();
 				countdown_time = parseInt(countdown_time, 10);
@@ -494,6 +494,12 @@
 					startCountdown(countdown_sec);
 				}
 			}
+		}
+
+		$scope.$on("afterLogin", function (event, username) {
+			// 檢查需不需要倒數
+			_username = username;
+			runCountdown();
 		});
 
 		$scope.$on("afterLogout", function (event, username) {
@@ -510,19 +516,9 @@
 			stopCountdown();
 		});
 
-		if (typeof(Storage) !== "undefined") {
-			var countdown_time = localStorage.getItem(getCountdownItemKey());
-			if (countdown_time) {
-				var now = new Date();
-				countdown_time = parseInt(countdown_time, 10);
-				if (countdown_time > now.getTime()) {
-					var countdown_sec = parseInt((countdown_time - now.getTime()) / 1000, 10);
-					startCountdown(countdown_sec);
-				}
-			}
-		}
-
 		window.onbeforeunload = saveCountdownTime;
+
+		runCountdown();
 	}]);
 	/* Angular - End */
 })();
