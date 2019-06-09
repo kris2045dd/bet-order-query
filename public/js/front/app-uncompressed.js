@@ -296,6 +296,7 @@
 						vm.username = res.msg;
 						vm.msg = 2;
 						f.username.value = "", f.balance.value = "";
+						$scope.$broadcast("afterLogin", vm.username);
 						$scope.$digest();
 					} else if (res.msg) {
 						alert(res.msg);
@@ -317,7 +318,9 @@
 			$http.get(BASE_URI + "/logout")
 				.then(function (response) {
 					/* 登出成功 */
+					var username = vm.username;
 					vm.username = "", vm.bet_orders = vm.filtered_bet_orders = [], vm.msg = 1;
+					$scope.$broadcast("afterLogout", username);
 					alert("登出成功.");
 				}, function (response) {
 					alert("登出失败. (" + response.status + ": " + response.statusText + ")");
@@ -433,9 +436,10 @@
 		}
 	}]);
 
-	app.controller("SearchFormCtrl", ["$scope", function ($scope) {
+	app.controller("SearchFormCtrl", ["$scope", "username", function ($scope, username) {
 		// View Model
 		var vm = this,
+			_username = username,
 			timeout_id;
 
 		vm.countdown_sec = 0;
@@ -451,6 +455,8 @@
 
 		function startCountdown(sec) {
 			vm.countdown_sec = sec ? sec : 600;
+			// 先清掉前一次的倒數
+			timeout_id && clearInterval(timeout_id);
 			timeout_id = setInterval(function () {
 				countdown();
 				$scope.$digest();
@@ -462,6 +468,40 @@
 			timeout_id && clearInterval(timeout_id);
 		}
 
+		function getCountdownItemKey() {
+			return "countdown_time:" + _username;
+		}
+
+		function saveCountdownTime() {
+			if (typeof(Storage) === "undefined" || !vm.countdown_sec) {
+				return;
+			}
+			var d = new Date();
+			d.setTime(d.getTime() + (vm.countdown_sec * 1000));
+			localStorage.setItem(getCountdownItemKey(), d.getTime());
+		}
+
+		$scope.$on("afterLogin", function (event, username) {
+			// 檢查需不需要倒數
+			_username = username;
+			var key = getCountdownItemKey(),
+				countdown_time = localStorage.getItem(key);
+			if (countdown_time) {
+				var now = new Date();
+				countdown_time = parseInt(countdown_time, 10);
+				if (countdown_time > now.getTime()) {
+					var countdown_sec = parseInt((countdown_time - now.getTime()) / 1000, 10);
+					startCountdown(countdown_sec);
+				}
+			}
+		});
+
+		$scope.$on("afterLogout", function (event, username) {
+			_username = username;
+			saveCountdownTime();
+			stopCountdown();
+		});
+
 		$scope.$on("afterGetData", function (event) {
 			startCountdown();
 		});
@@ -471,7 +511,7 @@
 		});
 
 		if (typeof(Storage) !== "undefined") {
-			var countdown_time = localStorage.getItem("countdown_time");
+			var countdown_time = localStorage.getItem(getCountdownItemKey());
 			if (countdown_time) {
 				var now = new Date();
 				countdown_time = parseInt(countdown_time, 10);
@@ -482,14 +522,7 @@
 			}
 		}
 
-		window.onbeforeunload = function () {
-			if (typeof(Storage) === "undefined" || !vm.countdown_sec) {
-				return;
-			}
-			var d = new Date();
-			d.setTime(d.getTime() + (vm.countdown_sec * 1000));
-			localStorage.setItem("countdown_time", d.getTime());
-		};
+		window.onbeforeunload = saveCountdownTime;
 	}]);
 	/* Angular - End */
 })();
