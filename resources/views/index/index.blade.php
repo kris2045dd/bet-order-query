@@ -26,12 +26,12 @@
 						</div>
 
 						<div class="likeul">
-							<a id="ch" href="{{ $m_setting->link1 }}" {{ $m_setting->link1_blank ? 'target="_blank"' : '' }}>最新优惠</a>|
-							<a href="{{ $m_setting->link2 }}" {{ $m_setting->link2_blank ? 'target="_blank"' : '' }}>升级模式</a>|
-							<a id="ch1" href="{{ $m_setting->link3 }}" {{ $m_setting->link3_blank ? 'target="_blank"' : '' }}>免登录充值中心</a>|
-							<a id="ch2" href="{{ $m_setting->link4 }}" {{ $m_setting->link4_blank ? 'target="_blank"' : '' }}>自助客服</a>|
-							<a id="ch3" href="{{ $m_setting->link5 }}" {{ $m_setting->link5_blank ? 'target="_blank"' : '' }}>代理加盟</a>|
-							<a id="ch4" href="{{ $m_setting->link6 }}" {{ $m_setting->link6_blank ? 'target="_blank"' : '' }}>官网首页</a>|
+							<a id="ch" href="{{ $m_setting->link1 }}" target="{{ $m_setting->link1_blank ? '_blank' : '_self' }}">最新优惠</a>|
+							<a href="{{ $m_setting->link2 }}" target="{{ $m_setting->link2_blank ? '_blank' : '_self' }}">升级模式</a>|
+							<a id="ch1" href="{{ $m_setting->link3 }}" target="{{ $m_setting->link3_blank ? '_blank' : '_self' }}">免登录充值中心</a>|
+							<a id="ch2" href="{{ $m_setting->link4 }}" target="{{ $m_setting->link4_blank ? '_blank' : '_self' }}">自助客服</a>|
+							<a id="ch3" href="{{ $m_setting->link5 }}" target="{{ $m_setting->link5_blank ? '_blank' : '_self' }}">代理加盟</a>|
+							<a id="ch4" href="{{ $m_setting->link6 }}" target="{{ $m_setting->link6_blank ? '_blank' : '_self' }}">官网首页</a>|
 							<a href="javascript:void(0)" onclick="javascript:try{window.external.AddFavorite('http://7802004.com/','金沙赌场-注单查询系統');}catch(e){(window.sidebar)?window.sidebar.addPanel('金沙赌场-注单查询系統','http://7802004.com/',''):alert('请点击进入网站后使用按键 Ctrl+d 收藏');}">加入收藏</a>
 						</div>
 
@@ -40,26 +40,26 @@
 
 				<div class="jseondhead">
 					<div class="content">
-						<a class="jslogo" href="{{ $m_setting->link22 }}" {{ $m_setting->link22_blank ? 'target="_blank"' : '' }}>
+						<a class="jslogo" href="{{ $m_setting->link22 }}" target="{{ $m_setting->link22_blank ? '_blank' : '_self' }}">
 							<img src="{{ asset('images/logo.png') }}" />
 						</a>
 						<img class="myAnim" src="{{ asset('images/animate.gif') }}" />
 						<div class="kf_right">
-							<a class="zxkf" href="{{ $m_setting->link7 }}" {{ $m_setting->link7_blank ? 'target="_blank"' : '' }}></a>
+							<a class="zxkf" href="{{ $m_setting->link7 }}" target="{{ $m_setting->link7_blank ? '_blank' : '_self' }}"></a>
 						</div>
 					</div>
 				</div>
 
 				<div class="jsnav">
 					<ul>
-						<li><a href="{{ $m_setting->link8 }}" {{ $m_setting->link8_blank ? 'target="_blank"' : '' }}>一键入款</a></li>
-						<li><a href="{{ $m_setting->link9 }}" {{ $m_setting->link9_blank ? 'target="_blank"' : '' }}>十五大捕鱼机</a></li>
-						<li><a href="{{ $m_setting->link10 }}" {{ $m_setting->link10_blank ? 'target="_blank"' : '' }}>申请大厅</a></li>
-						<li><a href="{{ $m_setting->link11 }}" {{ $m_setting->link11_blank ? 'target="_blank"' : '' }}>天天红包</a></li>
-						<li><a href="{{ $m_setting->link12 }}" {{ $m_setting->link12_blank ? 'target="_blank"' : '' }}>手机下注</a></li>
-						<li><a href="{{ $m_setting->link13 }}" {{ $m_setting->link13_blank ? 'target="_blank"' : '' }}>满意度调查</a></li>
-						<li><a href="{{ $m_setting->link14 }}" {{ $m_setting->link14_blank ? 'target="_blank"' : '' }}>资讯端</a></li>
-						<li><a href="{{ $m_setting->link15 }}" {{ $m_setting->link15_blank ? 'target="_blank"' : '' }}>注册会员</a></li>
+						<li><a href="{{ $m_setting->link8 }}" target="{{ $m_setting->link8_blank ? '_blank' : '_self' }}">一键入款</a></li>
+						<li><a href="{{ $m_setting->link9 }}" target="{{ $m_setting->link9_blank ? '_blank' : '_self' }}">十五大捕鱼机</a></li>
+						<li><a href="{{ $m_setting->link10 }}" target="{{ $m_setting->link10_blank ? '_blank' : '_self' }}">申请大厅</a></li>
+						<li><a href="{{ $m_setting->link11 }}" target="{{ $m_setting->link11_blank ? '_blank' : '_self' }}">天天红包</a></li>
+						<li><a href="{{ $m_setting->link12 }}" target="{{ $m_setting->link12_blank ? '_blank' : '_self' }}">手机下注</a></li>
+						<li><a href="{{ $m_setting->link13 }}" target="{{ $m_setting->link13_blank ? '_blank' : '_self' }}">满意度调查</a></li>
+						<li><a href="{{ $m_setting->link14 }}" target="{{ $m_setting->link14_blank ? '_blank' : '_self' }}">资讯端</a></li>
+						<li><a href="{{ $m_setting->link15 }}" target="{{ $m_setting->link15_blank ? '_blank' : '_self' }}">注册会员</a></li>
 					</ul>
 				</div>
 			</div>{{-- .header END --}}
@@ -70,26 +70,32 @@
 						<label for="game_palt">平台</label>
 						<select id="game_palt" ng-model="body.qs.platform">
 							<option value="">全部平台</option>
-							<option value="BB电子">BB电子</option>
-							<option value="MG电子">MG电子</option>
-							<option value="GNS电子">GNS电子</option>
-							<option value="ISB电子">ISB电子</option>
-							<option value="PT电子">PT电子</option>
-							<option value="HB电子">HB电子</option>
-							<option value="PP电子">PP电子</option>
-							<option value="JDB电子">JDB电子</option>
-							<option value="大满贯电子">大满贯电子</option>
-							<option value="RT电子">RT电子</option>
-							<option value="SG电子">SG电子</option>
-							<option value="SW电子">SW电子</option>
-							<option value="BNG电子">BNG电子</option>
-							<option value="WM电子">WM电子</option>
-							<option value="Gti电子">Gti电子</option>
-							<option value="CQ9电子">CQ9电子</option>
-							<option value="KA电子">KA电子</option>
-							<option value="AW电子">AW电子</option>
-							<option value="FG电子">FG电子</option>
-							<option value="IN电子">IN电子</option>
+							<optgroup label="电子">
+								<option value="BB电子">BB电子</option>
+								<option value="MG电子">MG电子</option>
+								<option value="GNS电子">GNS电子</option>
+								<option value="ISB电子">ISB电子</option>
+								<option value="PT电子">PT电子</option>
+								<option value="HB电子">HB电子</option>
+								<option value="PP电子">PP电子</option>
+								<option value="JDB电子">JDB电子</option>
+								<option value="大满贯电子">大满贯电子</option>
+								<option value="RT电子">RT电子</option>
+								<option value="SG电子">SG电子</option>
+								<option value="SW电子">SW电子</option>
+								<option value="BNG电子">BNG电子</option>
+								<option value="WM电子">WM电子</option>
+								<option value="Gti电子">Gti电子</option>
+								<option value="CQ9电子">CQ9电子</option>
+								<option value="KA电子">KA电子</option>
+								<option value="AW电子">AW电子</option>
+								<option value="FG电子">FG电子</option>
+								<option value="IN电子">IN电子</option>
+							</optgroup>
+							<optgroup label="棋牌">
+								<option value="开元棋牌">开元棋牌</option>
+								<option value="BB棋牌">BB棋牌</option>
+							</optgroup>
 						</select>
 
 						<button id="getquery" class="betdata_btn autoWave" type="button"
@@ -188,13 +194,13 @@
 
 			<div class="footer">
 				<div class="footer_link">
-					<a href="{{ $m_setting->link16 }}" {{ $m_setting->link16_blank ? 'target="_blank"' : '' }}>关于我们</a>
-					<a href="{{ $m_setting->link17 }}" {{ $m_setting->link17_blank ? 'target="_blank"' : '' }}>联系我们</a>
-					<a href="{{ $m_setting->link18 }}" {{ $m_setting->link18_blank ? 'target="_blank"' : '' }}>代理加盟</a>
+					<a href="{{ $m_setting->link16 }}" target="{{ $m_setting->link16_blank ? '_blank' : '_self' }}">关于我们</a>
+					<a href="{{ $m_setting->link17 }}" target="{{ $m_setting->link17_blank ? '_blank' : '_self' }}">联系我们</a>
+					<a href="{{ $m_setting->link18 }}" target="{{ $m_setting->link18_blank ? '_blank' : '_self' }}">代理加盟</a>
 					<br class="m" />
-					<a href="{{ $m_setting->link19 }}" {{ $m_setting->link19_blank ? 'target="_blank"' : '' }}>存款帮助</a>
-					<a href="{{ $m_setting->link20 }}" {{ $m_setting->link20_blank ? 'target="_blank"' : '' }}>取款帮助</a>
-					<a href="{{ $m_setting->link21 }}" {{ $m_setting->link21_blank ? 'target="_blank"' : '' }}>常见问题</a>
+					<a href="{{ $m_setting->link19 }}" target="{{ $m_setting->link19_blank ? '_blank' : '_self' }}">存款帮助</a>
+					<a href="{{ $m_setting->link20 }}" target="{{ $m_setting->link20_blank ? '_blank' : '_self' }}">取款帮助</a>
+					<a href="{{ $m_setting->link21 }}" target="{{ $m_setting->link21_blank ? '_blank' : '_self' }}">常见问题</a>
 				</div>
 				<p>Copyright © 金沙赌场版权所有 Reserved</p>
 			</div>{{-- .footer END --}}

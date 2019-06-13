@@ -3,13 +3,13 @@
 namespace App\Activities;
 
 /**
-	電子六重曲 - 畅享赔率彩金
-	註: BBIN電子不參與此項優惠
+	暢玩棋牌 - 第 2 惠
+	註: 限 開元棋牌、BB棋牌
 
 	參考:
 		http://7182004.com/
 */
-class Activity2 extends ActivityBase
+class Activity3 extends ActivityBase
 {
 
 	// 規則樣式
@@ -30,17 +30,17 @@ class Activity2 extends ActivityBase
 	</thead>
 	<tbody>
 		<tr>
-			<td>≥<span style="color:red;font-weight:bold;">30</span>倍</td>
-			<td>当局有效投注 * <span style="color:red;font-weight:bold;">3</span></td>
-			<td rowspan="3" style="vertical-align:middle"><span style="color:red;font-weight:bold;">8888</span>元</td>
+			<td>派彩金额÷投注金额≥<span style="color:red;font-weight:bold;">3</span>倍</td>
+			<td>投注金额x<span style="color:red;font-weight:bold;">1</span>倍</td>
+			<td rowspan="3" style="vertical-align:middle"><span style="color:red;font-weight:bold;">1888</span>元</td>
 		</tr>
 		<tr>
-			<td>≥<span style="color:red;font-weight:bold;">60</span>倍</td>
-			<td>当局有效投注 * <span style="color:red;font-weight:bold;">5</span></td>
+			<td>派彩金额÷投注金额≥<span style="color:red;font-weight:bold;">6</span>倍</td>
+			<td>投注金额x<span style="color:red;font-weight:bold;">2</span>倍</td>
 		</tr>
 		<tr>
-			<td>≥<span style="color:red;font-weight:bold;">120</span>倍</td>
-			<td>当局有效投注 * <span style="color:red;font-weight:bold;">10</span></td>
+			<td>派彩金额÷投注金额≥<span style="color:red;font-weight:bold;">15</span>倍</td>
+			<td>投注金额x<span style="color:red;font-weight:bold;">5</span>倍</td>
 		</tr>
 	</tbody>
 </table>
@@ -54,8 +54,8 @@ RULE_DESC;
 	*/
 	public function match(\App\Models\DBetOrder $bet_order, \App\Models\MActivityRule $activity_rule)
 	{
-		// BB電子 或 非電子(棋牌) 不參與此項活動
-		if ($bet_order->platform=='BB电子' || strpos($bet_order->platform, '电子')===false) {
+		// 活動只限 開元棋牌、BB棋牌
+		if ($bet_order->platform!='开元棋牌' && $bet_order->platform!='BB棋牌') {
 			return ['matched' => 0, 'bonus' => 0];
 		}
 

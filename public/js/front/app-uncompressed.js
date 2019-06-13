@@ -130,7 +130,8 @@
 		var activities = [],
 			manager = {
 				activity1: new Activity1(),
-				activity2: new Activity2()
+				activity2: new Activity2(),
+				activity3: new Activity3()
 			};
 
 		$http.get(BASE_URI + "/getActivities")
@@ -172,8 +173,7 @@
 				if (bet_order.bet_amount < 1) {
 					return false;
 				}
-				var r = rule.split("|");
-				reg = new RegExp(r[0] + "$");
+				reg = new RegExp(rule.split("|")[0] + "$");
 				if (reg.test(bet_order.bet_order_id)) {
 					return true;
 				}
@@ -190,8 +190,8 @@
 		*/
 		function Activity2() {
 			this.isMatch = function (bet_order, rule) {
-				// BBIN電子 不參與此項活動
-				if (bet_order.platform == "BB电子") {
+				// BB電子 或 非電子(棋牌) 不參與此項活動
+				if (bet_order.platform=="BB电子" || bet_order.platform.indexOf("电子")==-1) {
 					return false;
 				}
 				// 免費遊戲的注單，不參與活動 (至少 1 元)
@@ -201,8 +201,35 @@
 				if (bet_order.payout_amount <= 0) {
 					return false;
 				}
-				var r = rule.split("|");
-				if ((bet_order.payout_amount / bet_order.bet_amount) > r[0]) {
+				if ((bet_order.payout_amount / bet_order.bet_amount) >= rule.split("|")[0]) {
+					return true;
+				}
+				return false;
+			};
+		}
+
+		/*
+			暢玩棋牌 - 第 2 惠
+			註: 限 開元棋牌、BB棋牌
+
+			參考:
+				http://7182004.com/
+		*/
+		function Activity3() {
+			this.isMatch = function (bet_order, rule) {
+				// 活動只限 開元棋牌、BB棋牌
+				if (bet_order.platform!="开元棋牌" && bet_order.platform!="BB棋牌") {
+					return false;
+				}
+				// 免費遊戲的注單，不參與活動 (至少 1 元)
+				if (bet_order.bet_amount < 1) {
+					return false;
+				}
+				// 彩派金額小於 0
+				if (bet_order.payout_amount <= 0) {
+					return false;
+				}
+				if ((bet_order.payout_amount / bet_order.bet_amount) >= rule.split("|")[0]) {
 					return true;
 				}
 				return false;
@@ -358,7 +385,7 @@
 						vm.msg = res.data.length ? 0 : 3;
 						markMatchedOrder();
 						filterBetOrders();
-						$scope.$broadcast("afterGetData");
+						$scope.$broadcast("afterGettingData");
 						$scope.$digest();
 					} else if (res.msg) {
 						alert(res.msg);
@@ -422,6 +449,7 @@
 				var o = vm.bet_orders[i];
 				if (o.bet_order_id == bet_order.bet_order_id) {
 					o.deposited = applied;
+					break;
 				}
 			}
 		}
@@ -503,20 +531,17 @@
 		});
 
 		$scope.$on("afterLogout", function (event, username) {
-			_username = username;
-			saveCountdownTime();
 			stopCountdown();
 		});
 
-		$scope.$on("afterGetData", function (event) {
+		$scope.$on("afterGettingData", function (event) {
 			startCountdown();
+			saveCountdownTime();
 		});
 
 		$scope.$on("$destroy", function (event) {
 			stopCountdown();
 		});
-
-		window.onbeforeunload = saveCountdownTime;
 
 		runCountdown();
 	}]);
