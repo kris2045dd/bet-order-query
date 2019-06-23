@@ -17,7 +17,7 @@
 					<div class="content">
 						<span class="header-text1">7x24</span>
 						<span class="header-text2">小时在线电话客服</span>
-						<span class="header-text3">00853-6258-0555</span>
+						<span class="header-text3">+6396 1345 5555</span>
 
 						<div class="menber_btns">
 							<a href="javascript:void(0)" class="login_btn" ng-hide="body.username" ng-click="body.loginPopup()">登录</a>
@@ -53,7 +53,7 @@
 				<div class="jsnav">
 					<ul>
 						<li><a href="{{ $m_setting->link8 }}" target="{{ $m_setting->link8_blank ? '_blank' : '_self' }}">一键入款</a></li>
-						<li><a href="{{ $m_setting->link9 }}" target="{{ $m_setting->link9_blank ? '_blank' : '_self' }}">十五大捕鱼机</a></li>
+						<li><a href="{{ $m_setting->link9 }}" target="{{ $m_setting->link9_blank ? '_blank' : '_self' }}">二十三大捕鱼机</a></li>
 						<li><a href="{{ $m_setting->link10 }}" target="{{ $m_setting->link10_blank ? '_blank' : '_self' }}">申请大厅</a></li>
 						<li><a href="{{ $m_setting->link11 }}" target="{{ $m_setting->link11_blank ? '_blank' : '_self' }}">天天红包</a></li>
 						<li><a href="{{ $m_setting->link12 }}" target="{{ $m_setting->link12_blank ? '_blank' : '_self' }}">手机下注</a></li>
@@ -70,32 +70,28 @@
 						<label for="game_palt">平台</label>
 						<select id="game_palt" ng-model="body.qs.platform">
 							<option value="">全部平台</option>
-							<optgroup label="电子">
-								<option value="BB电子">BB电子</option>
-								<option value="MG电子">MG电子</option>
-								<option value="GNS电子">GNS电子</option>
-								<option value="ISB电子">ISB电子</option>
-								<option value="PT电子">PT电子</option>
-								<option value="HB电子">HB电子</option>
-								<option value="PP电子">PP电子</option>
-								<option value="JDB电子">JDB电子</option>
-								<option value="大满贯电子">大满贯电子</option>
-								<option value="RT电子">RT电子</option>
-								<option value="SG电子">SG电子</option>
-								<option value="SW电子">SW电子</option>
-								<option value="BNG电子">BNG电子</option>
-								<option value="WM电子">WM电子</option>
-								<option value="Gti电子">Gti电子</option>
-								<option value="CQ9电子">CQ9电子</option>
-								<option value="KA电子">KA电子</option>
-								<option value="AW电子">AW电子</option>
-								<option value="FG电子">FG电子</option>
-								<option value="IN电子">IN电子</option>
-							</optgroup>
-							<optgroup label="棋牌">
-								<option value="开元棋牌">开元棋牌</option>
-								<option value="BB棋牌">BB棋牌</option>
-							</optgroup>
+							<option value="BB电子">BB电子</option>
+							<option value="MG电子">MG电子</option>
+							<option value="GNS电子">GNS电子</option>
+							<option value="ISB电子">ISB电子</option>
+							<option value="PT电子">PT电子</option>
+							<option value="HB电子">HB电子</option>
+							<option value="PP电子">PP电子</option>
+							<option value="JDB电子">JDB电子</option>
+							<option value="大满贯电子">大满贯电子</option>
+							<option value="RT电子">RT电子</option>
+							<option value="SG电子">SG电子</option>
+							<option value="SW电子">SW电子</option>
+							<option value="BNG电子">BNG电子</option>
+							<option value="WM电子">WM电子</option>
+							<option value="Gti电子">Gti电子</option>
+							<option value="CQ9电子">CQ9电子</option>
+							<option value="KA电子">KA电子</option>
+							<option value="AW电子">AW电子</option>
+							<option value="FG电子">FG电子</option>
+							<option value="IN电子">IN电子</option>
+							<option value="开元棋牌">开元棋牌</option>
+							<option value="BB棋牌">BB棋牌</option>
 						</select>
 
 						<button id="getquery" class="betdata_btn autoWave" type="button"
@@ -134,9 +130,9 @@
 						</div>
 
 						<div class="d_default" ng-show="body.msg == 1">
-							<p>您必须先登入后才可查询，</p>
-							<p>请点选右上方「登录」按钮后，</p>
-							<p>输入帐号及帐户余额后方可查询⋯</p>
+							<p>您必须先登录后才可查询</p>
+							<p>输入帐号及帐户余额后方可查询</p>
+							<p><a href="javascript:void(0)" ng-click="body.loginPopup()">点击登录</a></p>
 						</div>
 
 						<div class="d_default" ng-show="body.msg == 2">

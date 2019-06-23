@@ -226,7 +226,7 @@ class SettingController extends Controller
 				'on'  => ['value' => 1, 'text' => '是', 'color' => 'primary'],
 				'off' => ['value' => 0, 'text' => '否', 'color' => 'default'],
 			]);
-			$form->url('link9', '十五大捕鱼机')->rules('nullable');
+			$form->url('link9', '二十三大捕鱼机')->rules('nullable');
 			$form->switch('link9_blank', '另开')->states([
 				'on'  => ['value' => 1, 'text' => '是', 'color' => 'primary'],
 				'off' => ['value' => 0, 'text' => '否', 'color' => 'default'],

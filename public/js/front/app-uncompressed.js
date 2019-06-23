@@ -15,7 +15,7 @@
 					location.reload();
 				}
 			} else {
-				alert("发生错误.");
+				alert("网络连线错误.");
 			}
 		},
 		complete: function (jqXHR, textStatus) {
