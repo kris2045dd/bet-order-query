@@ -7,6 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 class DBetOrderApply extends Model
 {
 
+	const DEPOSITED_DEFAULT = 0;
+	const DEPOSITED_SUCCESS = 1;
+	const DEPOSITED_REJECTED = 2;
+
 	protected $table = 'd_bet_order_apply';
 	protected $primaryKey = 'bet_order_apply_id';
 

@@ -117,6 +117,8 @@
 					return "已申请";
 				case 1:
 					return "已派彩";
+				case 2:
+					return "拒绝";
 				default:
 					return "一键办理";
 			}
@@ -398,7 +400,7 @@
 					ajax_sent = false;
 				}
 			});
-		}
+		};
 
 		vm.applicable = function (bet_order) {
 			if (bet_order.matched) {
@@ -440,7 +442,11 @@
 					ajax_sent = false;
 				}
 			});
-		}
+		};
+
+		vm.showMemo = function (memo) {
+			alert(memo);
+		};
 
 		function setBetOrderApplied(bet_order, applied) {
 			bet_order.deposited = applied;

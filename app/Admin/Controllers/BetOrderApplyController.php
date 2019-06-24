@@ -84,6 +84,7 @@ class BetOrderApplyController extends Controller
 		// 資料
 		$activity_options = $this->getActivityOptions();
 		$activity_rule_options = $this->getActivityRuleOptions();
+		$deposited_table = $this->getDepositedTable();
 
 		// 由新到舊
 		$grid->model()->orderBy('bet_order_apply_id', 'DESC');
@@ -91,7 +92,7 @@ class BetOrderApplyController extends Controller
 		// 關閉選擇器
 		$grid->disableRowSelector();
 		// 自訂搜尋
-		$grid->filter(function ($filter) use ($activity_options, $activity_rule_options) {
+		$grid->filter(function ($filter) use ($activity_options, $activity_rule_options, $deposited_table) {
 			// Remove the default id filter
 			$filter->disableIdFilter();
 
@@ -115,18 +116,28 @@ class BetOrderApplyController extends Controller
 			$filter->between('bet_time', '投注时间')->datetime();
 			$filter->equal('activity_id', '活动')->select($activity_options);
 			$filter->equal('activity_rule_id', '规则')->select($activity_rule_options);
-			$filter->equal('deposited', '已派彩')->radio(array_replace(
+			$filter->equal('deposited', '派彩状态')->radio(array_replace(
 				['' => '全部'],
-				[
-					'0' => '否',
-					'1' => '是',
-				]
+				$deposited_table
 			));
 		});
 		// 關閉新建按鈕
 		$grid->disableCreateButton();
-		// 關閉操作按鈕
+		/* 關閉操作按鈕
 		$grid->disableActions();
+		*/
+		$grid->actions(function ($actions) {
+			/*
+			$actions->disableEdit();
+			*/
+			$actions->disableView();
+			$actions->disableDelete();
+			// 已申請
+			if ($actions->row->deposited == \App\Models\DBetOrderApply::DEPOSITED_DEFAULT) {
+				// 執行派彩 按钮
+				$actions->append(new \App\Admin\Extensions\ExecDeposit($actions->getKey(), admin_base_path('betOrderApply/execDeposit')));
+			}
+		});
 
 		//$grid->column('bet_order_apply_id', '编号');
 		$grid->column('bet_order_id', '注单号');
@@ -149,10 +160,10 @@ class BetOrderApplyController extends Controller
 			return "未知 ({$activity_rule_id})";
 		});
 		$grid->column('bonus', '彩金');
-		$grid->column('deposited', '已派彩')->switch([
-			'on'  => ['value' => 1, 'text' => '是', 'color' => 'primary'],
-			'off' => ['value' => 0, 'text' => '否', 'color' => 'default'],
-		]);
+		$grid->column('deposited', '派彩状态')->editable('select', $deposited_table);
+		$grid->column('memo', '备注')->display(function ($memo) {
+			return str_limit($memo, 16, ' ...');
+		})->editable('textarea');
 
         return $grid;
     }
@@ -191,16 +202,44 @@ class BetOrderApplyController extends Controller
     {
         $form = new Form(new DBetOrderApply);
 
-        $form->text('username', 'Username');
-        $form->text('platform', 'Platform');
-        $form->text('game_name', 'Game name');
-        $form->decimal('bet_amount', 'Bet amount');
-        $form->decimal('payout_amount', 'Payout amount');
-        $form->datetime('bet_time', 'Bet time')->default(date('Y-m-d H:i:s'));
-        $form->number('activity_id', 'Activity id');
-        $form->number('activity_rule_id', 'Activity rule id');
-        $form->decimal('bonus', 'Bonus');
-        $form->switch('deposited', 'Deposited');
+		// 資料
+		$activity_options = $this->getActivityOptions();
+		$activity_rule_options = $this->getActivityRuleOptions();
+		$deposited_table = $this->getDepositedTable();
+
+		// 關閉工具
+		$form->tools(function (Form\Tools $tools) {
+			$tools->disableView();
+			$tools->disableDelete();
+			/*
+			$tools->disableList();
+			$tools->disableBackButton();
+			$tools->disableListButton();
+			*/
+		});
+		// 表單 Footer
+		$form->footer(function ($footer) {
+			$footer->disableReset();
+			$footer->disableViewCheck();
+			$footer->disableCreatingCheck();
+			$footer->disableEditingCheck();
+			/*
+			$footer->disableSubmit();
+			*/
+		});
+
+        $form->text('bet_order_id', '注单号')->readonly();
+        $form->text('username', '帐号')->readonly();
+        $form->text('platform', '平台')->readonly();
+        $form->text('game_name', '游戏名称')->readonly();
+		$form->currency('bet_amount', '投注金额')->attribute(['readonly' => 'readonly']);
+        $form->currency('payout_amount', '派彩金额')->attribute(['readonly' => 'readonly']);
+        $form->datetime('bet_time', '投注时间')->default(date('Y-m-d H:i:s'))->readonly();
+		$form->select('activity_id', '活动')->options($activity_options)->readonly();
+		$form->select('activity_rule_id', '规则')->options($activity_rule_options)->readonly();
+        $form->currency('bonus', '彩金')->attribute(['readonly' => 'readonly']);
+        $form->select('deposited', '派彩状态')->options($deposited_table);
+        $form->textarea('memo', '备注');
 
         return $form;
     }
@@ -236,6 +275,41 @@ class BetOrderApplyController extends Controller
 			// Response
 			$res['error'] = -1;
 			$res['data'] = $count;
+		} catch (\Exception $e) {
+			$res['error'] = $e->getCode();
+			$res['msg'] = $e->getMessage();
+		}
+
+		return response()->json($res);
+	}
+
+	// 取得上分狀態表
+	protected function getDepositedTable()
+	{
+		return [
+			\App\Models\DBetOrderApply::DEPOSITED_DEFAULT => '已申请',
+			\App\Models\DBetOrderApply::DEPOSITED_SUCCESS => '已派彩',
+			\App\Models\DBetOrderApply::DEPOSITED_REJECTED => '拒绝',
+		];
+	}
+
+	// 執行派彩
+	public function execDeposit(\Illuminate\Http\Request $request)
+	{
+		$res = ['error' => '', 'msg' => ''];
+
+		try {
+			// 接收參數
+			$pk = $request->input('pk');
+
+
+			// 執行派彩
+			$bet_order_apply = \App\Models\DBetOrderApply::findOrFail($pk);
+			\App\Managers\Bot::getInstance()->deposit($bet_order_apply);
+
+
+			// Response
+			$res['error'] = -1;
 		} catch (\Exception $e) {
 			$res['error'] = $e->getCode();
 			$res['msg'] = $e->getMessage();

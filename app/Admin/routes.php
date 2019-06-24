@@ -14,6 +14,7 @@ Route::group([
 
 	$router->post('betOrder/truncate', 'BetOrderController@truncate');
 	$router->post('betOrderApply/getUndepositedCount', 'BetOrderApplyController@getUndepositedCount');
+	$router->post('betOrderApply/execDeposit', 'BetOrderApplyController@execDeposit');
 
 	$router->get('bot', 'BotController@index');
 	$router->post('bot/logIn', 'BotController@logIn');

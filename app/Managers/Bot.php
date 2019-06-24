@@ -5,6 +5,8 @@ namespace App\Managers;
 class Bot extends ManagerBase
 {
 
+	protected $settings;
+
 	// 取得會員注單資料
 	public function fetchMemberBetOrders($username)
 	{
@@ -93,5 +95,69 @@ class Bot extends ManagerBase
 
         return $chunk;
     }
+
+	public function getSettings()
+	{
+		if (empty($this->settings)) {
+			$this->settings = \App\Models\MBotSetting::findOrFail(1);
+		}
+
+		return $this->settings;
+	}
+
+	// 上分 (派彩)
+	public function deposit(\App\Models\DBetOrderApply $bet_order)
+	{
+		// 檢查
+		if ($bet_order->deposited == \App\Models\DBetOrderApply::DEPOSITED_SUCCESS) {
+			throw new \Exception('注单已派彩.');
+		}
+
+		if ($bet_order->deposited == \App\Models\DBetOrderApply::DEPOSITED_REJECTED) {
+			throw new \Exception('注单已拒绝.');
+		}
+
+		$bot_setting = $this->getSettings();
+		$api = rtrim($bot_setting->api_url, '/') . '/deposit';
+		$bot_secret = env('BOT_SECRET', '');
+
+		$activity = \App\Models\MActivity::findOrFail($bet_order->activity_id);
+
+		$form_params = [
+			'username' => $bet_order->username,
+			'amount' => $bet_order->bonus,
+			// 長度限制 128
+			'reason' => str_limit(
+				$activity->name . ' : ' . $activity->m_activity_rule()->findOrFail($bet_order->activity_rule_id)->name . " (注单号: {$bet_order->bet_order_id})",
+				125,
+				'...'
+			),
+		];
+		$form_params['token'] = strtoupper(md5("{$form_params['username']}|{$form_params['amount']}|{$form_params['reason']}|{$bot_secret}"));
+
+		// 呼叫上分 API
+		$client = new \GuzzleHttp\Client();
+		$response = $client->request('POST', $api, [
+			'form_params' => $form_params
+		]);
+
+		// 檢查
+		if ($response->getStatusCode() != 200) {
+			throw new \Exception('GuzzleHttp request failed. (' . $response->getStatusCode() . ')', 104);
+		}
+
+		$result = json_decode($response->getBody(), true);
+		if (json_last_error() !== \JSON_ERROR_NONE) {
+			throw new \Exception('JSON decode failed.', 105);
+		}
+
+		if (!isset($result['state']) || $result['state']!=0) {
+			throw new \Exception('上分失败.' . (empty($result['message']) ? '' : " ({$result['message']})"));
+		}
+
+		// 成功 (更新注單上分狀態)
+		$bet_order->deposited = \App\Models\DBetOrderApply::DEPOSITED_SUCCESS;
+		$bet_order->save();
+	}
 
 }

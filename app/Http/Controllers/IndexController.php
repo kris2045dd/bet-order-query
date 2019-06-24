@@ -141,7 +141,8 @@ class IndexController extends Controller
 			$sql =
 				"SELECT
 					o.*,
-					oa.deposited
+					oa.deposited,
+					oa.memo
 				FROM d_bet_order AS o
 					LEFT JOIN d_bet_order_apply AS oa USING(bet_order_id)
 				WHERE
@@ -208,12 +209,16 @@ class IndexController extends Controller
 			$applied_bet_orders = \App\Models\DBetOrderApply::where('bet_order_id', '=', $bet_order_id)->get();
 			if ($applied_bet_orders->isNotEmpty()) {
 				foreach ($applied_bet_orders as $v) {
-					if ($v->deposited) {
-						$res['data'] = 1;
+					if ($v->deposited == \App\Models\DBetOrderApply::DEPOSITED_SUCCESS) {
+						$res['data'] = \App\Models\DBetOrderApply::DEPOSITED_SUCCESS;
 						throw new \Exception('注单已派彩.');
 					}
+					if ($v->deposited == \App\Models\DBetOrderApply::DEPOSITED_REJECTED) {
+						$res['data'] = \App\Models\DBetOrderApply::DEPOSITED_REJECTED;
+						throw new \Exception($v->memo ?: '申请已拒絕.');
+					}
 				}
-				$res['data'] = 0;
+				$res['data'] = \App\Models\DBetOrderApply::DEPOSITED_DEFAULT;
 				throw new \Exception('注单处理中.');
 			}
 
@@ -244,54 +249,16 @@ class IndexController extends Controller
 				$orders[] = $order;
 			}
 
-			$res['data'] = 0;
+			$res['data'] = \App\Models\DBetOrderApply::DEPOSITED_DEFAULT;
 
 
 			// 是否自動上分 (派彩)
-			$bot_setting = \App\Models\MBotSetting::findOrFail(1);
+			$bot_m = \App\Managers\Bot::getInstance();
+			$bot_setting = $bot_m->getSettings();
 			if ($bot_setting->auto_deposit) {
-				$api = rtrim($bot_setting->api_url, '/') . '/deposit';
-				$bot_secret = env('BOT_SECRET', '');
 				foreach ($orders as $order) {
-					$activity = \App\Models\MActivity::findOrFail($order->activity_id);
-
-					$form_params = [
-						'username' => $order->username,
-						'amount' => $order->bonus,
-						// 長度限制 128
-						'reason' => str_limit(
-							$activity->name . ' : ' . $activity->m_activity_rule()->findOrFail($order->activity_rule_id)->name . " (注单号: {$order->bet_order_id})",
-							125,
-							'...'
-						),
-					];
-					$form_params['token'] = strtoupper(md5("{$form_params['username']}|{$form_params['amount']}|{$form_params['reason']}|{$bot_secret}"));
-
-					// 呼叫上分 API
-					$client = new \GuzzleHttp\Client();
-					$response = $client->request('POST', $api, [
-						'form_params' => $form_params
-					]);
-
-					// 檢查
-					if ($response->getStatusCode() != 200) {
-						throw new \Exception('GuzzleHttp request failed. (' . $response->getStatusCode() . ')', 104);
-					}
-
-					$result = json_decode($response->getBody(), true);
-					if (json_last_error() !== \JSON_ERROR_NONE) {
-						throw new \Exception('JSON decode failed.', 105);
-					}
-
-					if (!isset($result['state']) || $result['state']!=0) {
-						throw new \Exception('上分失败.' . (empty($result['message']) ? '' : " ({$result['message']})"));
-					}
-
-					// 成功 (更新注單上分狀態)
-					$order->deposited = 1;
-					$order->save();
-
-					$res['data'] = 1;
+					$bot_m->deposit($order);
+					$res['data'] = \App\Models\DBetOrderApply::DEPOSITED_SUCCESS;
 				}
 			}
 
