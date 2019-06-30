@@ -8,6 +8,10 @@
 		<title>{{ $m_setting->title }}</title>
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous" />
 		<link rel="stylesheet" href="{{ asset('css/front/main.css') }}" />
+		<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.8/angular.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.8/angular-animate.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.8/angular-touch.min.js"></script>
 	</head>
 	<body ng-controller="BodyCtrl as body">
 
@@ -21,8 +25,8 @@
 
 						<div class="menber_btns">
 							<a href="javascript:void(0)" class="login_btn" ng-hide="body.username" ng-click="body.loginPopup()">登录</a>
-							<span id="login_name" style="display:inline-block" ng-show="body.username">欢迎，<span ng-bind="body.username"></span></span>
-							<a href="javascript:void(0)" class="logout_btn" style="display:inline-block" ng-show="body.username" ng-click="body.logout()">登出</a>
+							<span id="login_name" style="display:inline-block" ng-show="body.username" ng-cloak>欢迎，<span ng-bind="body.username"></span></span>
+							<a href="javascript:void(0)" class="logout_btn" style="display:inline-block" ng-show="body.username" ng-click="body.logout()" ng-cloak>登出</a>
 						</div>
 
 						<div class="likeul">
@@ -58,7 +62,7 @@
 						<li><a href="{{ $m_setting->link11 }}" target="{{ $m_setting->link11_blank ? '_blank' : '_self' }}">天天红包</a></li>
 						<li><a href="{{ $m_setting->link12 }}" target="{{ $m_setting->link12_blank ? '_blank' : '_self' }}">手机下注</a></li>
 						<li><a href="{{ $m_setting->link13 }}" target="{{ $m_setting->link13_blank ? '_blank' : '_self' }}">满意度调查</a></li>
-						<li><a href="{{ $m_setting->link14 }}" target="{{ $m_setting->link14_blank ? '_blank' : '_self' }}">资讯端</a></li>
+						<li><a href="{{ $m_setting->link14 }}" target="{{ $m_setting->link14_blank ? '_blank' : '_self' }}">入款教程</a></li>
 						<li><a href="{{ $m_setting->link15 }}" target="{{ $m_setting->link15_blank ? '_blank' : '_self' }}">注册会员</a></li>
 					</ul>
 				</div>
@@ -131,17 +135,17 @@
 							<div>一键办理</div>
 						</div>
 
-						<div class="d_default" ng-show="body.msg == 1">
+						<div class="d_default" ng-show="body.msg == 1" ng-cloak>
 							<p>您必须先登录后才可查询</p>
 							<p>输入帐号及帐户余额后方可查询</p>
 							<p><a href="javascript:void(0)" ng-click="body.loginPopup()">点击登录</a></p>
 						</div>
 
-						<div class="d_default" ng-show="body.msg == 2">
+						<div class="d_default" ng-show="body.msg == 2" ng-cloak>
 							<p>请点击「获取注单数据」来查看最近的注单内容</p>
 						</div>
 
-						<div class="d_default" ng-show="body.msg == 3">
+						<div class="d_default" ng-show="body.msg == 3" ng-cloak>
 							<p>查无最近的注单</p>
 						</div>
 
@@ -202,6 +206,40 @@
 				</div>
 				<p>Copyright © 金沙赌场版权所有 Reserved</p>
 			</div>{{-- .footer END --}}
+
+
+			<ul class="footer_m">
+				<li>
+					<a href="http://www.812004.com">
+						<img src="{{ asset('images/mobile/0-001.png') }}">
+						<p>一键入款<span>shorcut deposit</span></p>
+					</a>
+				</li>
+				<li>
+					<a href="http://cj2004.com/">
+						<img src="{{ asset('images/mobile/0-007.png') }}">
+						<p>彩金攻略<span>lottery tips</span></p>
+					</a>
+				</li>
+				<li>
+					<a href="http://0672004.com/">
+						<img src="{{ asset('images/mobile/0-005.png') }}">
+					</a>
+				</li>
+				<li>
+					<a href="http://kf2004.com/">
+						<img src="{{ asset('images/mobile/0-006.png') }}">
+						<p>自助客服<span>self-service</span></p>
+					</a>
+				</li>
+				<li>
+					<a href="http://kf9363.com">
+						<img src="{{ asset('images/mobile/0-004.png') }}">
+						<p>在线客服<span>online service</span></p>
+					</a>
+				</li>
+			</ul>
+
 		</div>{{-- .wrap END --}}
 
 
@@ -233,10 +271,6 @@
 
 
 
-		<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.8/angular.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.8/angular-animate.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.8/angular-touch.min.js"></script>
 		<script src="{{ asset('js/front/ui-bootstrap-tpls-2.5.0.min.js') }}"></script>
 		<script src="{{ asset('js/front/index.js') }}"></script>
 		<script src="{{ asset('js/front/app.js') }}"></script>
