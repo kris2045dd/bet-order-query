@@ -64,7 +64,7 @@ RULE_DESC;
 			return ['matched' => 0, 'bonus' => 0];
 		}
 
-		// 彩派金額小於 0
+		// 派彩金額 <= 0
 		if ($bet_order->payout_amount <= 0) {
 			return ['matched' => 0, 'bonus' => 0];
 		}

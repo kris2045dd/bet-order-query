@@ -46,7 +46,7 @@ class Activity extends ManagerBase
 	{
 		$activity_class = '\App\Activities\Activity' . $activity_id;
 		if (! class_exists($activity_class)) {
-			throw new \Exception('Class 不存在. (' . $activity_class . ')');
+			throw new \Exception('Activity class 不存在. (' . $activity_class . ')');
 		}
 
 		return new $activity_class();

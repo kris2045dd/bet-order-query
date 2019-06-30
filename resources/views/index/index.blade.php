@@ -92,6 +92,8 @@
 							<option value="IN电子">IN电子</option>
 							<option value="开元棋牌">开元棋牌</option>
 							<option value="BB棋牌">BB棋牌</option>
+							<option value="BB捕鱼大师">BB捕鱼大师</option>
+							<option value="BB捕鱼达人">BB捕鱼达人</option>
 						</select>
 
 						<button id="getquery" class="betdata_btn autoWave" type="button"

@@ -92,7 +92,7 @@ class BetOrderApplyController extends Controller
 		// 關閉選擇器
 		$grid->disableRowSelector();
 		// 自訂搜尋
-		$grid->filter(function ($filter) use ($activity_options, $activity_rule_options, $deposited_table) {
+		$grid->filter(function ($filter) use ($activity_options, $deposited_table) {
 			// Remove the default id filter
 			$filter->disableIdFilter();
 
@@ -115,7 +115,7 @@ class BetOrderApplyController extends Controller
 			}, '派彩金额 (<)')->currency();
 			$filter->between('bet_time', '投注时间')->datetime();
 			$filter->equal('activity_id', '活动')->select($activity_options);
-			$filter->equal('activity_rule_id', '规则')->select($activity_rule_options);
+			$filter->equal('activity_rule_id', '规则')->select($this->getActivityRuleOptions(true));
 			$filter->equal('deposited', '派彩状态')->radio(array_replace(
 				['' => '全部'],
 				$deposited_table
@@ -254,13 +254,16 @@ class BetOrderApplyController extends Controller
 	}
 
 	// 取得規則 options for select
-	protected function getActivityRuleOptions()
+	protected function getActivityRuleOptions($with_activity_name = false)
 	{
-		$rows = \App\Models\MActivityRule::select('activity_rule_id', 'name')
-			->orderBy('activity_id', 'ASC')
-			->orderBy('order', 'DESC')
-			->get()
-			->toArray();
+		$sql =
+			"SELECT
+				ar.activity_rule_id,
+				" . ($with_activity_name ? "CONCAT(ar.name, ' (', a.name, ')') AS name" : "ar.name") . "
+			FROM m_activity_rule AS ar
+				" . ($with_activity_name ? "LEFT JOIN m_activity AS a USING(activity_id)" : "") . "
+			ORDER BY ar.activity_id ASC, ar.`order` ASC";
+		$rows = \Illuminate\Support\Facades\DB::select($sql);
 		return array_column($rows, 'name', 'activity_rule_id');
 	}
 

@@ -125,7 +125,12 @@
 		};
 	});
 
-	/* 活動 service */
+	/*
+		活動 service
+
+		活動參考:
+			http://7182004.com/
+	*/
 	app.service("activityService", activityService);
 	activityService.$inject = ["$http", "BASE_URI"];
 	function activityService($http, BASE_URI) {
@@ -133,7 +138,8 @@
 			manager = {
 				activity1: new Activity1(),
 				activity2: new Activity2(),
-				activity3: new Activity3()
+				activity3: new Activity3(),
+				activity4: new Activity4()
 			};
 
 		$http.get(BASE_URI + "/getActivities")
@@ -160,10 +166,8 @@
 
 		/*
 			電子五重曲 - 老虎機 300 倍彩金
-			參與遊戲: BB電子老虎機系列
 
-			參考:
-				http://7182004.com/
+			參與遊戲: BB電子老虎機系列
 		*/
 		function Activity1() {
 			this.isMatch = function (bet_order, rule) {
@@ -185,10 +189,8 @@
 
 		/*
 			電子六重曲 - 畅享赔率彩金
-			註: BBIN電子不參與此項優惠
 
-			參考:
-				http://7182004.com/
+			註: BBIN電子不參與此項優惠
 		*/
 		function Activity2() {
 			this.isMatch = function (bet_order, rule) {
@@ -200,6 +202,7 @@
 				if (bet_order.bet_amount < 1) {
 					return false;
 				}
+				// 派彩金額 <= 0
 				if (bet_order.payout_amount <= 0) {
 					return false;
 				}
@@ -212,10 +215,8 @@
 
 		/*
 			暢玩棋牌 - 第 2 惠
-			註: 限 開元棋牌、BB棋牌
 
-			參考:
-				http://7182004.com/
+			註: 限 開元棋牌、BB棋牌
 		*/
 		function Activity3() {
 			this.isMatch = function (bet_order, rule) {
@@ -227,11 +228,37 @@
 				if (bet_order.bet_amount < 1) {
 					return false;
 				}
-				// 彩派金額小於 0
+				// 派彩金額 <= 0
 				if (bet_order.payout_amount <= 0) {
 					return false;
 				}
 				if ((bet_order.payout_amount / bet_order.bet_amount) >= rule.split("|")[0]) {
+					return true;
+				}
+				return false;
+			};
+		}
+
+		/*
+			捕魚大師 捕魚達人 - 超級獎上獎
+
+			註: 限 BBIN捕魚大師、BBIN捕魚達人
+		*/
+		function Activity4() {
+			this.isMatch = function (bet_order, rule) {
+				// 活動只限 BBIN捕魚大師、BBIN捕魚達人
+				if (bet_order.platform!="BB捕鱼大师" && bet_order.platform!="BB捕鱼达人") {
+					return false;
+				}
+				// 免費遊戲的注單，不參與活動 (至少 1 元)
+				if (bet_order.bet_amount < 1) {
+					return false;
+				}
+				// 派彩金額 <= 0
+				if (bet_order.payout_amount <= 0) {
+					return false;
+				}
+				if (bet_order.payout_amount >= rule.split("|")[0]) {
 					return true;
 				}
 				return false;
