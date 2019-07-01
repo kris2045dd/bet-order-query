@@ -162,7 +162,7 @@
 							<div class="regs"><a href="javascript:void(0)"
 								ng-if="body.applicable(o)"
 								ng-click="body.activityApplying(o)"
-								ng-bind="o.deposited | appliedStatus"></a><a href="javascript:void(0)" ng-show="o.deposited == 2 && o.memo" ng-click="body.showMemo(o.memo)"> (详情)</a></div>
+								ng-bind="o.deposited | appliedStatus"></a> <i class="glyphicon glyphicon-list-alt" ng-show="o.deposited == 2 && o.memo" ng-click="body.showMemo(o.memo)" role="button"></i></div>
 						</div>
 					</div>{{-- .data_table END --}}
 
