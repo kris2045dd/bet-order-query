@@ -251,7 +251,7 @@ class SettingController extends Controller
 				'on'  => ['value' => 1, 'text' => '是', 'color' => 'primary'],
 				'off' => ['value' => 0, 'text' => '否', 'color' => 'default'],
 			]);
-			$form->url('link14', '资讯端')->rules('nullable');
+			$form->url('link14', '入款教程')->rules('nullable');
 			$form->switch('link14_blank', '另开')->states([
 				'on'  => ['value' => 1, 'text' => '是', 'color' => 'primary'],
 				'off' => ['value' => 0, 'text' => '否', 'color' => 'default'],
@@ -292,6 +292,20 @@ class SettingController extends Controller
 				'on'  => ['value' => 1, 'text' => '是', 'color' => 'primary'],
 				'off' => ['value' => 0, 'text' => '否', 'color' => 'default'],
 			]);
+		})->tab('Footer 连结设定 (手机版)', function ($form) {
+			$form->url('link8', '一键入款')->attribute(['disabled' => 'disabled'])
+				->help('同 选单连结设定 -&gt; 一键入款');
+			$form->url('link23', '彩金攻略')->rules('nullable');
+			$form->switch('link23_blank', '另开')->states([
+				'on'  => ['value' => 1, 'text' => '是', 'color' => 'primary'],
+				'off' => ['value' => 0, 'text' => '否', 'color' => 'default'],
+			]);
+			$form->url('link1', '最新优惠')->attribute(['disabled' => 'disabled'])
+				->help('同 Header 连结设定 -&gt; 最新优惠');
+			$form->url('link4', '自助客服')->attribute(['disabled' => 'disabled'])
+				->help('同 Header 连结设定 -&gt; 自助客服');
+			$form->url('link7', '在线客服')->attribute(['disabled' => 'disabled'])
+				->help('同 Header 连结设定 -&gt; 24 在线客服');
 		});
 
         return $form;

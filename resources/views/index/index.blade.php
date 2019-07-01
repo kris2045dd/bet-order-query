@@ -210,30 +210,30 @@
 
 			<ul class="footer_m">
 				<li>
-					<a href="http://www.812004.com">
+					<a href="{{ $m_setting->link8 }}" target="{{ $m_setting->link8_blank ? '_blank' : '_self' }}">
 						<img src="{{ asset('images/mobile/0-001.png') }}">
 						<p>一键入款<span>shorcut deposit</span></p>
 					</a>
 				</li>
 				<li>
-					<a href="http://cj2004.com/">
+					<a href="{{ $m_setting->link23 }}" target="{{ $m_setting->link23_blank ? '_blank' : '_self' }}">
 						<img src="{{ asset('images/mobile/0-007.png') }}">
 						<p>彩金攻略<span>lottery tips</span></p>
 					</a>
 				</li>
 				<li>
-					<a href="http://0672004.com/">
+					<a href="{{ $m_setting->link1 }}" target="{{ $m_setting->link1_blank ? '_blank' : '_self' }}">
 						<img src="{{ asset('images/mobile/0-005.png') }}">
 					</a>
 				</li>
 				<li>
-					<a href="http://kf2004.com/">
+					<a href="{{ $m_setting->link4 }}" target="{{ $m_setting->link4_blank ? '_blank' : '_self' }}">
 						<img src="{{ asset('images/mobile/0-006.png') }}">
 						<p>自助客服<span>self-service</span></p>
 					</a>
 				</li>
 				<li>
-					<a href="http://kf9363.com">
+					<a href="{{ $m_setting->link7 }}" target="{{ $m_setting->link7_blank ? '_blank' : '_self' }}">
 						<img src="{{ asset('images/mobile/0-004.png') }}">
 						<p>在线客服<span>online service</span></p>
 					</a>
