@@ -95,15 +95,20 @@
 	});
 
 	app.filter("matchedOnly", function () {
-		return function (items, matched_only) {
-			if (! matched_only) {
+		return function (items, activity_id) {
+			if (activity_id === "") {
 				return items;
 			}
 			var filtered = [], i = 0, len = items.length;
 			for (; i < len; i++) {
 				var item = items[i];
 				if (item.matched) {
-					filtered.push(item);
+					// 所有中獎注單
+					if (activity_id == "all") {
+						filtered.push(item);
+					} else if (item.matched == activity_id) {
+						filtered.push(item);
+					}
 				}
 			}
 			return filtered;
@@ -147,7 +152,7 @@
 				activities = response.data.data;
 			});
 
-		this.isMatch = function (bet_order) {
+		this.getMatched = function (bet_order) {
 			var i = 0, len = activities.length;
 			for (; i < len; i++) {
 				var activity_class = manager["activity" + activities[i].activity_id];
@@ -157,11 +162,11 @@
 				var j = 0; j_len = activities[i].rules.length;
 				for (; j < j_len; j++) {
 					if (activity_class.isMatch(bet_order, activities[i].rules[j])) {
-						return true;
+						return activities[i].activity_id;
 					}
 				}
 			}
-			return false;
+			return 0;
 		};
 
 		/*
@@ -293,7 +298,7 @@
 			platform: "",
 			amount: "",
 			tail_no: "",
-			matched: false
+			matched: ""
 		};
 
 		function filterBetOrders() {
@@ -386,7 +391,7 @@
 		function markMatchedOrder() {
 			var i = 0, len = vm.bet_orders.length;
 			for (; i < len; i++) {
-				vm.bet_orders[i].matched = activityService.isMatch(vm.bet_orders[i]) ? 1 : 0;
+				vm.bet_orders[i].matched = activityService.getMatched(vm.bet_orders[i]);
 			}
 		}
 

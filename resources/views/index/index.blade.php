@@ -111,11 +111,17 @@
 							<label for="bet_dollar">注单<span>(仅限1元以上)</span></label>
 							<input id="bet_dollar" type="text" placeholder="1" ng-model="body.qs.amount" />
 
+							<select ng-model="body.qs.matched">
+								<option value="">所有注单</option>
+								<option value="all">所有中奖注单</option>
+								<option value="1">电子五重曲</option>
+								<option value="2">电子六重曲</option>
+								<option value="3">畅玩棋牌 - 第 2 惠</option>
+								<option value="4">捕鱼大师 - 超级奖上奖</option>
+							</select>
+
 							<label for="bet_tail">注单尾数</label>
 							<input id="bet_tail" type="text" placeholder="88888888" ng-model="body.qs.tail_no" />
-
-							<input id="matched" type="checkbox" ng-model="body.qs.matched" />
-							<label for="matched">只显示中奖注单</label>
 
 							{{--
 							<button type="button" class="check_btn">查询</button>
