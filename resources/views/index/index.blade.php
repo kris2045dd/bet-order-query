@@ -71,7 +71,7 @@
 			<div class="main">
 				<div class="content">
 					<form ng-controller="SearchFormCtrl as sf">
-						<label for="game_palt">平台</label>
+						<!-- <label for="game_palt">平台</label> -->
 						<select id="game_palt" ng-model="body.qs.platform">
 							<option value="">全部平台</option>
 							<option value="BB电子">BB电子</option>
@@ -108,9 +108,6 @@
 
 						<a class="open_sreach_btn" href="javascript:void(0)" ng-click="sf.toggleSearchBet()"></a>
 						<div class="search_bet">
-							<label for="bet_dollar">注单<span>(仅限1元以上)</span></label>
-							<input id="bet_dollar" type="text" placeholder="1" ng-model="body.qs.amount" />
-
 							<select ng-model="body.qs.matched">
 								<option value="">所有注单</option>
 								<option value="all">所有中奖注单</option>
@@ -119,6 +116,9 @@
 								<option value="3">畅玩棋牌 - 第 2 惠</option>
 								<option value="4">捕鱼大师 - 超级奖上奖</option>
 							</select>
+
+							<label for="bet_dollar">注单<span>(仅限1元以上)</span></label>
+							<input id="bet_dollar" type="text" placeholder="1" ng-model="body.qs.amount" />
 
 							<label for="bet_tail">注单尾数</label>
 							<input id="bet_tail" type="text" placeholder="88888888" ng-model="body.qs.tail_no" />

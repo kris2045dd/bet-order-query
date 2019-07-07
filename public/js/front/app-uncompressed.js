@@ -510,7 +510,8 @@
 
 		vm.countdown_sec = 0;
 		vm.toggleSearchBet = function () {
-			$(".search_bet").slideToggle();
+			// $(".search_bet").slideToggle();
+			$(".search_bet").toggleClass("showSB");
 		};
 
 		function countdown() {
