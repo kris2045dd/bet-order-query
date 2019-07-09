@@ -121,7 +121,7 @@
 							<input id="bet_dollar" type="text" placeholder="1" ng-model="body.qs.amount" />
 
 							<label for="bet_tail">注单尾数</label>
-							<input id="bet_tail" type="text" placeholder="88888888" ng-model="body.qs.tail_no" />
+							<input id="bet_tail" type="text" ng-model="body.qs.tail_no" />
 
 							{{--
 							<button type="button" class="check_btn">查询</button>
