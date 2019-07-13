@@ -71,7 +71,9 @@
 			<div class="main">
 				<div class="content">
 					<form ng-controller="SearchFormCtrl as sf">
-						<!-- <label for="game_palt">平台</label> -->
+						{{--
+						<label for="game_palt">平台</label>
+						--}}
 						<select id="game_palt" ng-model="body.qs.platform">
 							<option value="">全部平台</option>
 							<option value="BB电子">BB电子</option>
@@ -93,8 +95,11 @@
 							<option value="KA电子">KA电子</option>
 							<option value="AW电子">AW电子</option>
 							<option value="FG电子">FG电子</option>
-							<option value="IN电子">IN电子</option>
+							<option value="AG电子">AG电子</option>
+							<option value="LG电子">LG电子</option>
+							<option value="易游电子">易游电子</option>
 							<option value="开元棋牌">开元棋牌</option>
+							<option value="易游棋牌">易游棋牌</option>
 							<option value="BB棋牌">BB棋牌</option>
 							<option value="BB捕鱼大师">BB捕鱼大师</option>
 							<option value="BB捕鱼达人">BB捕鱼达人</option>
@@ -165,10 +170,13 @@
 							<div ng-bind="::o.bet_time"></div>
 							<div ng-bind="::o.bet_amount"></div>
 							<div ng-bind="::o.payout_amount"></div>
-							<div class="regs"><a href="javascript:void(0)"
-								ng-if="body.applicable(o)"
-								ng-click="body.activityApplying(o)"
-								ng-bind="o.deposited | appliedStatus"></a> <i class="glyphicon glyphicon-list-alt" ng-show="o.deposited == 2 && o.memo" ng-click="body.showMemo(o.memo)" role="button"></i></div>
+							<div class="regs">
+								<a href="javascript:void(0)"
+									ng-if="body.applicable(o)"
+									ng-click="body.activityApplying(o)"
+									ng-bind="o.deposited | appliedStatus"></a>&nbsp;
+								<i class="glyphicon glyphicon-list-alt" ng-show="o.deposited == 2 && o.memo" ng-click="body.showMemo(o.memo)" role="button"></i>
+							</div>
 						</div>
 					</div>{{-- .data_table END --}}
 

@@ -210,16 +210,19 @@ class IndexController extends Controller
 			if ($applied_bet_orders->isNotEmpty()) {
 				foreach ($applied_bet_orders as $v) {
 					if ($v->deposited == \App\Models\DBetOrderApply::DEPOSITED_SUCCESS) {
-						$res['data'] = \App\Models\DBetOrderApply::DEPOSITED_SUCCESS;
+						$res['data'] = ['deposited' => \App\Models\DBetOrderApply::DEPOSITED_SUCCESS];
 						throw new \Exception('注单已派彩.');
 					}
 					if ($v->deposited == \App\Models\DBetOrderApply::DEPOSITED_REJECTED) {
-						$res['data'] = \App\Models\DBetOrderApply::DEPOSITED_REJECTED;
-						throw new \Exception($v->memo ?: '申请已拒絕.');
+						$res['data'] = [
+							'deposited' => \App\Models\DBetOrderApply::DEPOSITED_REJECTED,
+							'memo' => $v->memo,
+						];
+						throw new \Exception('申请已拒絕.');
 					}
 				}
-				$res['data'] = \App\Models\DBetOrderApply::DEPOSITED_DEFAULT;
-				throw new \Exception('注单处理中.');
+				$res['data'] = ['deposited' => \App\Models\DBetOrderApply::DEPOSITED_DEFAULT];
+				throw new \Exception('审核处理中.');
 			}
 
 
@@ -249,7 +252,7 @@ class IndexController extends Controller
 				$orders[] = $order;
 			}
 
-			$res['data'] = \App\Models\DBetOrderApply::DEPOSITED_DEFAULT;
+			$res['data'] = ['deposited' => \App\Models\DBetOrderApply::DEPOSITED_DEFAULT];
 
 
 			// 是否自動上分 (派彩)
@@ -258,7 +261,7 @@ class IndexController extends Controller
 			if ($bot_setting->auto_deposit) {
 				foreach ($orders as $order) {
 					$bot_m->deposit($order);
-					$res['data'] = \App\Models\DBetOrderApply::DEPOSITED_SUCCESS;
+					$res['data'] = ['deposited' => \App\Models\DBetOrderApply::DEPOSITED_SUCCESS];
 				}
 			}
 

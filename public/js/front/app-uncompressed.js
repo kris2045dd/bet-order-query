@@ -119,7 +119,7 @@
 		return function (deposited) {
 			switch (deposited) {
 				case 0:
-					return "已申请";
+					return "进度查询";
 				case 1:
 					return "已派彩";
 				case 2:
@@ -465,7 +465,7 @@
 						alert("发生未知的错误.");
 					}
 					if (res.data !== "") {
-						setBetOrderApplied(bet_order, res.data);
+						updateBetOrder(bet_order, res.data);
 						$scope.$digest();
 					}
 				},
@@ -480,13 +480,13 @@
 			alert(memo);
 		};
 
-		function setBetOrderApplied(bet_order, applied) {
-			bet_order.deposited = applied;
+		function updateBetOrder(bet_order, data) {
+			$.extend(bet_order, data);
 			var i = 0, len = vm.bet_orders.length;
 			for (; i < len; i++) {
 				var o = vm.bet_orders[i];
 				if (o.bet_order_id == bet_order.bet_order_id) {
-					o.deposited = applied;
+					$.extend(o, data);
 					break;
 				}
 			}
@@ -510,7 +510,6 @@
 
 		vm.countdown_sec = 0;
 		vm.toggleSearchBet = function () {
-			// $(".search_bet").slideToggle();
 			$(".search_bet").toggleClass("showSB");
 		};
 

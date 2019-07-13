@@ -128,7 +128,10 @@ class Bot extends ManagerBase
 			'amount' => $bet_order->bonus,
 			// 長度限制 128
 			'reason' => str_limit(
+				$bet_order->bet_time . ', ' . $activity->name . ', ' . $bet_order->bet_order_id . ', ' . $bet_order->bet_amount,
+				/* 舊的
 				$activity->name . ' : ' . $activity->m_activity_rule()->findOrFail($bet_order->activity_rule_id)->name . " (注单号: {$bet_order->bet_order_id})",
+				*/
 				125,
 				'...'
 			),
