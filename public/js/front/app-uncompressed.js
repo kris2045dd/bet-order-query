@@ -263,7 +263,7 @@
 				if (bet_order.payout_amount <= 0) {
 					return false;
 				}
-				if (bet_order.payout_amount >= rule.split("|")[0]) {
+				if (bet_order.payout_amount >= parseInt(rule.split("|")[0], 10)) {
 					return true;
 				}
 				return false;
