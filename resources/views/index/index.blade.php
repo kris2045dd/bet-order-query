@@ -71,6 +71,18 @@
 			<div class="main">
 				<div class="content">
 					<form ng-controller="SearchFormCtrl as sf">
+
+						<div class="btns">
+							<button class="progress_btn"><i class="glyphicon glyphicon-search"></i>注单办理进度查询</button>
+
+							<button id="getquery" class="betdata_btn autoWave" type="button"
+								ng-click="body.getBetOrders()"
+								ng-disabled="sf.countdown_sec"
+								ng-class="{notwork:sf.countdown_sec}">
+								<span ng-show="sf.countdown_sec"><span ng-bind="sf.countdown_sec"></span>秒后...</span>获取注单数据
+							</button>
+						</div>
+
 						{{--
 						<label for="game_palt">平台</label>
 						--}}
@@ -105,14 +117,10 @@
 							<option value="BB捕鱼达人">BB捕鱼达人</option>
 						</select>
 
-						<button id="getquery" class="betdata_btn autoWave" type="button"
-							ng-click="body.getBetOrders()"
-							ng-disabled="sf.countdown_sec"
-							ng-class="{notwork:sf.countdown_sec}">
-							<span ng-show="sf.countdown_sec"><span ng-bind="sf.countdown_sec"></span>秒后...</span>获取注单数据</button>
-
 						<a class="open_sreach_btn" href="javascript:void(0)" ng-click="sf.toggleSearchBet()"></a>
+
 						<div class="search_bet">
+							<label>活动类型：</label>
 							<select ng-model="body.qs.matched">
 								<option value="">所有注单</option>
 								<option value="all">所有中奖注单</option>
@@ -120,6 +128,13 @@
 								<option value="2">电子六重曲</option>
 								<option value="3">畅玩棋牌 - 第 2 惠</option>
 								<option value="4">捕鱼大师 - 超级奖上奖</option>
+							</select>
+
+							<label>时间：</label>
+							<select>
+								<option value="">所有时间</option>
+								<option value="">2019/07/15</option>
+								<option value="">2019/07/14</option>
 							</select>
 
 							<label for="bet_dollar">注单<span>(仅限1元以上)</span></label>
@@ -261,7 +276,7 @@
 		<div class="login_pop popup">
 			<div class="popup_content">
 				<a class="popup_close" href="javascript:void(0)" ng-click="body.closeLoginPopup()">关闭</a>
-				<p>账号余额查询</p>
+				<p>登录账号及余额</p>
 				<form id="checkLogin" name="login_form">
 					<input name="username" type="text" placeholder="填写会员账号" />
 					<input name="balance" type="text" placeholder="填写账户余额" />
@@ -283,6 +298,53 @@
 		</div>
 
 
+		{{-- 进度查询彈窗 --}}
+		<div class="progress_pop popup">
+			<div class="popup_content">
+				<a class="popup_close" href="javascript:void(0)" ng-click="">关闭</a>
+				<p>注单办理进度查询</p>
+					<div class="data_table style2">
+						<div class="d_t">
+							<div>注单号</div>
+							<div>活动</div>
+							<div>派彩状态</div>
+							<div>备注</div>
+						</div>
+
+						<div class="d_default">尚未有申请办理的注单</div>
+
+						<div class="d_list">
+							<div>995257963</div>
+							<div>捕鱼大师 - 超级奖上奖</div>
+							<div>已派彩</div>
+							<div>原因理由原因理由</div>
+						</div>
+
+						<div class="d_list">
+							<div>669483496</div>
+							<div>畅玩棋牌 - 第 2 惠</div>
+							<div>拒绝</div>
+							<div>原因理由原因理由原因理由原因理由原因理由原因理由原因理由原因理由原因理由原因理由原因理由</div>
+						</div>
+
+						<div class="d_list">
+							<div>409926912555</div>
+							<div>电子五重曲 - 老虎机 300 倍彩金</div>
+							<div>拒绝</div>
+							<div>原因理由原因理由</div>
+						</div>
+
+						<div class="d_list">
+							<div>7280283016243</div>
+							<div>电子六重曲 - 畅享赔率彩金</div>
+							<div>申請中</div>
+							<div>原因理由原因理由原因理由</div>
+						</div>
+
+					</div>{{-- .data_table END --}}
+
+			</div>
+		</div>
 
 
 		<script src="{{ asset('js/front/ui-bootstrap-tpls-2.5.0.min.js') }}"></script>

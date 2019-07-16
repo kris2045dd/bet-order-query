@@ -444,7 +444,7 @@ body
 		background: none
 		min-height: 68vh
 	.content
-		padding: 50px 0
+		padding: 20px 0 50px 0
 		+rwd(pad)
 			padding: 3vw 2vw 5vw 2vw
 
@@ -452,6 +452,7 @@ body
 		display: inline-block
 		vertical-align: top
 		font-size: 0
+		padding: 0 0 0 20px
 		+rwd(pad)
 			// padding: 4vw 2vw
 			// margin: 3vw 0 0 0
@@ -492,7 +493,7 @@ body
 		display: block
 		position: relative
 		overflow: hidden
-		padding: 0 0 10px 0
+		padding: 0 0 6px 0
 		font-size: 0
 		+rwd(pad)
 			padding: 0 0 3vw 0
@@ -673,6 +674,10 @@ body
 				padding: 0 7vw 0 2vw
 				margin: 0 2vw 0 0
 
+		.btns
+			overflow: hidden
+			margin: 0 0 20px 0
+
 		button
 			@extend %appearance_none
 			display: inline-block
@@ -698,7 +703,17 @@ body
 			&.betdata_btn
 				float: right
 				padding: 0 10px
+				+background(linear-gradient(to bottom, #016533, #1a7f4d))
+				margin: 0 10px 0 0
 
+			&.progress_btn
+				float: right
+				padding: 0 10px
+				color: #fff
+				+background(linear-gradient(to bottom, #016533, #1a7f4d))
+				i
+					margin: 0 5px 0 0
+					font-size: 13px
 
 .autoWave
 	+animation(wave_ani 1s linear infinite alternate)
@@ -741,6 +756,7 @@ body
 			+box-sizing(border-box)
 			word-break: break-all
 			padding: 10px
+			margin: auto
 			+rwd(pad)
 				padding: 8px 1px
 			&:first-child
@@ -751,7 +767,6 @@ body
 
 	.d_list
 		display: flex
-		// display: none
 		background: rgba(#d0d0d0,0.8)
 		// justify-content: center
 		// align-items: center
@@ -762,9 +777,11 @@ body
 			+box-sizing(border-box)
 			word-break: break-all
 			padding: 10px
+			display: flex
+			// justify-content: center
+			align-items: center
 			+rwd(pad)
 				padding: 8px 1px
-
 			&:first-child
 				border-left: 1px solid #aeaeae
 
@@ -848,6 +865,51 @@ body
 				+rwd(pad)
 					flex: none
 					width: 55px
+
+
+
+.style2
+	font-size: 13px
+	line-height: 18px
+	max-height: 400px
+	// overflow-y: scroll
+	overflow-y: auto
+
+	.d_t
+		font-size: 14px
+		line-height: 24px
+	.d_t,.d_list
+		div
+			&:nth-child(1)
+				flex: none
+				width: 140px
+				+rwd(pad)
+					flex: 1
+
+			&:nth-child(2)
+				flex: none
+				width: 240px
+				+rwd(pad)
+					flex: 1
+
+			&:nth-child(3)
+				flex: none
+				width: 90px
+				justify-content: center
+				+rwd(pad)
+					flex: 1
+
+	.d_list
+		div
+			&:nth-child(1)
+				text-align: left
+			&:nth-child(2)
+				text-align: left
+			&:nth-child(4)
+				text-align: left
+
+
+
 
 
 .totalBetNum
@@ -1008,6 +1070,14 @@ body
 					font-size: 4vw
 					line-height: 10vw
 
+.progress_pop
+	display: none
+	.popup_content
+		width: 770px
+		padding: 10px 10px 20px 10px
+		+poa(50%,null,null,50%)
+
+
 
 +keyframes(focus_ani)
 	0%
@@ -1095,4 +1165,6 @@ body
 
 .pagination>li>a:hover
 	color: #000
+
+
 
