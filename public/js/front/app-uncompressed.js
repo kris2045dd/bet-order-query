@@ -255,8 +255,12 @@
 		*/
 		function Activity3() {
 			this.isMatch = function (bet_order, rule) {
-				// 活動只限 開元棋牌、BB棋牌
-				if (bet_order.platform!="开元棋牌" && bet_order.platform!="BB棋牌") {
+				// 活動只限 開元棋牌、BB棋牌、易游棋牌
+				if (bet_order.platform!="开元棋牌" && bet_order.platform!="BB棋牌" && bet_order.platform!="易游棋牌") {
+					return false;
+				}
+				// 三公、森林舞會、金鯊銀鯊、奔馳寶馬 遊戲除外
+				if (bet_order.game_name=='三公' || bet_order.game_name=='森林舞会' || bet_order.game_name=='金鲨银鲨' || bet_order.game_name=='奔驰宝马') {
 					return false;
 				}
 				// 免費遊戲的注單，不參與活動 (至少 1 元)

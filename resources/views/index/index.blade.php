@@ -179,8 +179,8 @@
 						<div class="d_list" ng-repeat="o in body.filtered_bet_orders |
 							offset: (body.paginator.current - 1) * body.paginator.per_page |
 							limitTo: body.paginator.per_page
-							track by o.platform + o.bet_order_id">
-							<div ng-bind="::o.platform"></div>
+							track by $id(o.platform + o.bet_order_id)">
+							<div>{* ::o.platform *}<span>({* ::o.game_name *})</span></div>
 							<div ng-bind="::o.game_name"></div>
 							<div ng-bind="::o.bet_order_id"></div>
 							<div ng-bind="::o.bet_time"></div>
@@ -314,7 +314,7 @@
 
 						<div class="d_default" ng-show="body.progress_msg == 'no data'">尚未有申请办理的注单</div>
 
-						<div class="d_list" ng-repeat="o in body.applied_bet_orders track by o.platform + o.bet_order_id">
+						<div class="d_list" ng-repeat="o in body.applied_bet_orders track by $id(o.platform + o.bet_order_id)">
 							<div ng-bind="::o.bet_order_id"></div>
 							<div ng-bind="::o.activity_name"></div>
 							<div ng-bind="o.deposited | depositedStatus"></div>
@@ -331,7 +331,7 @@
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
 		<script src="{{ asset('js/front/ui-bootstrap-tpls-2.5.0.min.js') }}"></script>
 		<script src="{{ asset('js/front/index.js') }}"></script>
-		<script src="{{ asset('js/front/app.js?v=1.1') }}"></script>
+		<script src="{{ asset('js/front/app.js?v=1.1.1') }}"></script>
 		<script>
 		{{-- Angular - Setting --}}
 		angular.module("jsApp")

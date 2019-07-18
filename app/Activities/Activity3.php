@@ -54,8 +54,13 @@ RULE_DESC;
 	*/
 	public function match(\App\Models\DBetOrder $bet_order, \App\Models\MActivityRule $activity_rule)
 	{
-		// 活動只限 開元棋牌、BB棋牌
-		if ($bet_order->platform!='开元棋牌' && $bet_order->platform!='BB棋牌') {
+		// 活動只限 開元棋牌、BB棋牌、易游棋牌
+		if ($bet_order->platform!='开元棋牌' && $bet_order->platform!='BB棋牌' && $bet_order->platform!='易游棋牌') {
+			return ['matched' => 0, 'bonus' => 0];
+		}
+
+		// 三公、森林舞會、金鯊銀鯊、奔馳寶馬 遊戲除外
+		if ($bet_order->game_name=='三公' || $bet_order->game_name=='森林舞会' || $bet_order->game_name=='金鲨银鲨' || $bet_order->game_name=='奔驰宝马') {
 			return ['matched' => 0, 'bonus' => 0];
 		}
 
