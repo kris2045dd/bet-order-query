@@ -470,7 +470,8 @@ body
 			overflow: hidden
 			// transition: all 0.4s
 			select
-				display: block
+				// display: block
+				width: 67vw
 				margin: 0 0 4vw 0
 		&.showSB
 			+rwd(pad)
@@ -496,7 +497,9 @@ body
 		padding: 0 0 6px 0
 		font-size: 0
 		+rwd(pad)
-			padding: 0 0 3vw 0
+			padding: 0 0 2vw 0
+			text-align: center
+			
 		label
 			display: inline-block
 			vertical-align: top
@@ -510,12 +513,23 @@ body
 				font-size: 3.75vw
 				line-height: 9vw
 				margin: 0 0 3vw 0
+				width: 22vw
+				text-align: right
 
 			&[for='game_palt']
 				+rwd(pad)
 					display: none
 
-				
+			&[for='bet_dollar']
+				+rwd(pad)
+					width: auto
+					text-align: left
+
+			&[for='bet_tail']
+				+rwd(pad)
+					width: auto
+					text-align: left
+
 			span
 				font-size: 13px
 				font-weight: normal
@@ -658,7 +672,7 @@ body
 			display: inline-block
 			vertical-align: top
 			height: 36px
-			background: #179146 url(#{$img}select_icon.png) no-repeat 92% center
+			background: #179146 url(#{$img}select_icon.png) no-repeat right 8px center
 			+background-size(auto 45%)
 			font-size: 15px
 			color: #fff
@@ -671,12 +685,17 @@ body
 			+rwd(pad)
 				height: 9vw
 				font-size: 3.75vw
-				padding: 0 7vw 0 2vw
+				padding: 0 8vw 0 2vw
 				margin: 0 2vw 0 0
+				background: #179146 url(#{$img}select_icon.png) no-repeat right 2vw center
+				+background-size(auto 45%)
 
 		.btns
 			overflow: hidden
 			margin: 0 0 20px 0
+			+rwd(pad)
+				width: 74vw
+				margin: 0 auto 5vw auto
 
 		button
 			@extend %appearance_none
@@ -874,6 +893,13 @@ body
 	max-height: 400px
 	// overflow-y: scroll
 	overflow-y: auto
+	+rwd(pad)
+		max-height: 55vh
+
+	.d_list
+		div
+			+rwd(pad)
+				padding: 8px 5px
 
 	.d_t
 		font-size: 14px
@@ -1076,6 +1102,9 @@ body
 		width: 770px
 		padding: 10px 10px 20px 10px
 		+poa(50%,null,null,50%)
+		+rwd(pad)
+			width: 88vw
+			padding: 2vw
 
 
 
