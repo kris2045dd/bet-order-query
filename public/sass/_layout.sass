@@ -395,9 +395,7 @@ body
 	// background: -webkit-linear-gradient(top, #3eab68 0%,#3eab68 63%,#179146 65%,#179146 100%)
 	// background: linear-gradient(to bottom, #3eab68 0%,#3eab68 63%,#179146 64%,#179146 100%)
 	+background(linear-gradient(to bottom, #3eab68 0%,#3eab68 63%,#179146 64%,#179146 100%))
-	position: fixed
-	left: 50%
-	bottom: 0
+	+pof(null,null,0,50%,9999)
 	transform: translate(-50%,0)
 	padding: 1vw 0
 	text-align: center
@@ -694,7 +692,7 @@ body
 			overflow: hidden
 			margin: 0 0 20px 0
 			+rwd(pad)
-				width: 74vw
+				width: 92vw
 				margin: 0 auto 5vw auto
 
 		button
@@ -797,7 +795,7 @@ body
 			word-break: break-all
 			padding: 10px
 			display: flex
-			// justify-content: center
+			justify-content: center
 			align-items: center
 			+rwd(pad)
 				padding: 8px 1px
