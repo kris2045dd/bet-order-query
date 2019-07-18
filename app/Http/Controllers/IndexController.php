@@ -273,4 +273,45 @@ class IndexController extends Controller
 
 		return response()->json($res);
 	}
+
+	// 查詢進度
+	public function queryProgress(Request $request)
+	{
+		$res = ['error' => '', 'data' => '', 'msg' => ''];
+
+		try {
+			if (! $request->session()->exists('member')) {
+				throw new \Exception('会员未登录.');
+			}
+
+			$member = $request->session()->get('member');
+
+			$sql =
+				"SELECT
+					o.bet_order_id,
+					o.platform,
+					o.deposited,
+					o.memo,
+					a.name AS activity_name
+				FROM d_bet_order_apply AS o
+					LEFT JOIN m_activity AS a USING(activity_id)
+				WHERE
+					o.username =:username
+					AND o.bet_time >= :bet_time
+				GROUP BY o.bet_order_id
+				ORDER BY o.bet_order_id DESC";
+			$bet_orders = \Illuminate\Support\Facades\DB::select($sql, [
+				'username' => $member['username'],
+				'bet_time' => date('Y-m-d 00:00:00', strtotime('-7 days')),
+			]);
+
+			$res['error'] = -1;
+			$res['data'] = $bet_orders;
+		} catch (\Exception $e) {
+			$res['error'] = $e->getCode();
+			$res['msg'] = $e->getMessage();
+		}
+
+		return response()->json($res);
+	}
 }
