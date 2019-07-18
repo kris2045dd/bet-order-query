@@ -23,6 +23,7 @@ Route::get('/logout', 'IndexController@logout');
 Route::post('/getBetOrders', 'IndexController@getBetOrders');
 Route::get('/getActivities', 'IndexController@getActivities');
 Route::post('/activityApplying', 'IndexController@activityApplying');
+Route::post('/queryProgress', 'IndexController@queryProgress');
 
 
 /*

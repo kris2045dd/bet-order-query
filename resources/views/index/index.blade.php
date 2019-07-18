@@ -73,7 +73,7 @@
 					<form ng-controller="SearchFormCtrl as sf">
 
 						<div class="btns">
-							<button class="progress_btn"><i class="glyphicon glyphicon-search"></i>注单办理进度查询</button>
+							<button class="progress_btn" ng-click="body.queryProgress()"><i class="glyphicon glyphicon-search"></i>注单办理进度查询</button>
 
 							<button id="getquery" class="betdata_btn autoWave" type="button"
 								ng-click="body.getBetOrders()"
@@ -131,10 +131,15 @@
 							</select>
 
 							<label>时间：</label>
-							<select>
+							<select
+								ng-model="body.qs.target_date"
+								ng-options="o.label for o in body.target_date_options track by o.val"
+								ng-init="body.qs.target_date = body.target_date_options[0]">
+								{{--
 								<option value="">所有时间</option>
-								<option value="">2019/07/15</option>
-								<option value="">2019/07/14</option>
+								<option value="2019-07-15">2019-07-15</option>
+								<option value="2019-07-14">2019-07-14</option>
+								--}}
 							</select>
 
 							<label for="bet_dollar">注单<span>(仅限1元以上)</span></label>
@@ -142,10 +147,6 @@
 
 							<label for="bet_tail">注单尾数</label>
 							<input id="bet_tail" type="text" ng-model="body.qs.tail_no" />
-
-							{{--
-							<button type="button" class="check_btn">查询</button>
-							--}}
 						</div>
 					</form>{{-- form END --}}
 
@@ -178,7 +179,7 @@
 						<div class="d_list" ng-repeat="o in body.filtered_bet_orders |
 							offset: (body.paginator.current - 1) * body.paginator.per_page |
 							limitTo: body.paginator.per_page
-							track by o.bet_order_id">
+							track by o.platform + o.bet_order_id">
 							<div ng-bind="::o.platform"></div>
 							<div ng-bind="::o.game_name"></div>
 							<div ng-bind="::o.bet_order_id"></div>
@@ -301,7 +302,7 @@
 		{{-- 进度查询彈窗 --}}
 		<div class="progress_pop popup">
 			<div class="popup_content">
-				<a class="popup_close" href="javascript:void(0)" ng-click="">关闭</a>
+				<a class="popup_close" href="javascript:void(0)" ng-click="body.closeProgressPopup()">关闭</a>
 				<p>注单办理进度查询</p>
 					<div class="data_table style2">
 						<div class="d_t">
@@ -311,45 +312,26 @@
 							<div>备注</div>
 						</div>
 
-						<div class="d_default">尚未有申请办理的注单</div>
+						<div class="d_default" ng-show="body.progress_msg == 'no data'">尚未有申请办理的注单</div>
 
-						<div class="d_list">
-							<div>995257963</div>
-							<div>捕鱼大师 - 超级奖上奖</div>
-							<div>已派彩</div>
-							<div>原因理由原因理由</div>
+						<div class="d_list" ng-repeat="o in body.applied_bet_orders track by o.platform + o.bet_order_id">
+							<div ng-bind="::o.bet_order_id"></div>
+							<div ng-bind="::o.activity_name"></div>
+							<div ng-bind="o.deposited | depositedStatus"></div>
+							<div ng-bind="o.memo"></div>
 						</div>
-
-						<div class="d_list">
-							<div>669483496</div>
-							<div>畅玩棋牌 - 第 2 惠</div>
-							<div>拒绝</div>
-							<div>原因理由原因理由原因理由原因理由原因理由原因理由原因理由原因理由原因理由原因理由原因理由</div>
-						</div>
-
-						<div class="d_list">
-							<div>409926912555</div>
-							<div>电子五重曲 - 老虎机 300 倍彩金</div>
-							<div>拒绝</div>
-							<div>原因理由原因理由</div>
-						</div>
-
-						<div class="d_list">
-							<div>7280283016243</div>
-							<div>电子六重曲 - 畅享赔率彩金</div>
-							<div>申請中</div>
-							<div>原因理由原因理由原因理由</div>
-						</div>
-
 					</div>{{-- .data_table END --}}
 
 			</div>
 		</div>
 
 
+
+
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
 		<script src="{{ asset('js/front/ui-bootstrap-tpls-2.5.0.min.js') }}"></script>
 		<script src="{{ asset('js/front/index.js') }}"></script>
-		<script src="{{ asset('js/front/app.js') }}"></script>
+		<script src="{{ asset('js/front/app.js?v=1.1') }}"></script>
 		<script>
 		{{-- Angular - Setting --}}
 		angular.module("jsApp")

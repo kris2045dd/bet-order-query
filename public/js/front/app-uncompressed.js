@@ -115,6 +115,23 @@
 		};
 	});
 
+	app.filter("targetDate", function () {
+		return function (items, target_date) {
+			if (target_date.val === "") {
+				return items;
+			}
+			var filtered = [], i = 0, len = items.length,
+				reg = new RegExp("^" + target_date.val);
+			for (; i < len; i++) {
+				var item = items[i];
+				if (reg.test(item.bet_time)) {
+					filtered.push(item);
+				}
+			}
+			return filtered;
+		};
+	});
+
 	app.filter("appliedStatus", function () {
 		return function (deposited) {
 			switch (deposited) {
@@ -126,6 +143,19 @@
 					return "拒绝";
 				default:
 					return "一键办理";
+			}
+		};
+	});
+
+	app.filter("depositedStatus", function () {
+		return function (deposited) {
+			switch (deposited) {
+				case 1:
+					return "已派彩";
+				case 2:
+					return "拒绝";
+				default:
+					return "申请中";
 			}
 		};
 	});
@@ -271,25 +301,29 @@
 		}
 	}
 
-	app.controller("BodyCtrl", [
+	app.controller("BodyCtrl", BodyCtrl);
+	BodyCtrl.$inject = [
 		"$scope",
 		"$http",
 		"platformFilter",
 		"tailNoFilter",
 		"amountGreaterThanFilter",
 		"matchedOnlyFilter",
+		"targetDateFilter",
 		"activityService",
 		"username",
-		"BASE_URI",
-		function ($scope, $http, platformFilter, tailNoFilter, amountGreaterThanFilter, matchedOnlyFilter, activityService, username, BASE_URI) {
-
+		"BASE_URI"
+	];
+	function BodyCtrl($scope, $http, platformFilter, tailNoFilter, amountGreaterThanFilter, matchedOnlyFilter, targetDateFilter, activityService, username, BASE_URI) {
 		// View Model
 		var vm = this;
 
 		vm.username = username;
 		vm.bet_orders = [];
 		vm.filtered_bet_orders = [];
+		vm.applied_bet_orders = [];
 		vm.msg = username ? 2 : 1;
+		vm.progress_msg = "";
 		vm.paginator = {
 			current: 1,
 			per_page: 10
@@ -298,11 +332,18 @@
 			platform: "",
 			amount: "",
 			tail_no: "",
-			matched: ""
+			matched: "",
+			target_date: ""
 		};
+		vm.target_date_options = [
+			{label:"所有时间", val:""},
+			{label:moment().format("YYYY-MM-DD"), val:moment().format("YYYY-MM-DD")},
+			{label:moment().subtract(1, "days").format("YYYY-MM-DD"), val:moment().subtract(1, "days").format("YYYY-MM-DD")}
+		];
 
 		function filterBetOrders() {
 			var filtered_bet_orders = matchedOnlyFilter(vm.bet_orders, vm.qs.matched);
+			filtered_bet_orders = targetDateFilter(filtered_bet_orders, vm.qs.target_date);
 			filtered_bet_orders = tailNoFilter(filtered_bet_orders, vm.qs.tail_no);
 			filtered_bet_orders = platformFilter(filtered_bet_orders, vm.qs.platform);
 			filtered_bet_orders = amountGreaterThanFilter(filtered_bet_orders, vm.qs.amount);
@@ -465,7 +506,7 @@
 						alert("发生未知的错误.");
 					}
 					if (res.data !== "") {
-						updateBetOrder(bet_order, res.data);
+						$.extend(bet_order, res.data);
 						$scope.$digest();
 					}
 				},
@@ -480,14 +521,68 @@
 			alert(memo);
 		};
 
-		function updateBetOrder(bet_order, data) {
-			$.extend(bet_order, data);
+		vm.queryProgress = function () {
+			if (ajax_sent) {
+				return;
+			}
+			if (! vm.username) {
+				vm.loginPopup();
+				return;
+			}
+
+			$.ajax({
+				url: BASE_URI + "/queryProgress",
+				type: "post",
+				dataType: "json",
+				beforeSend: function () {
+					ajax_sent = true;
+					showLoading("进度查询中，请耐心等待...");
+				},
+				success: function (res) {
+					if (res.error == -1) {
+						/* 資料取得成功 */
+						vm.applied_bet_orders = res.data;
+						vm.progress_msg = res.data.length ? "" : "no data";
+						updateBetOrders();
+						$scope.$digest();
+						progressPopup();
+					} else if (res.msg) {
+						alert(res.msg);
+					} else {
+						alert("发生未知的错误.");
+					}
+				},
+				complete: function () {
+					closeLoading();
+					ajax_sent = false;
+				}
+			});
+		};
+
+		function progressPopup() {
+			$(".progress_pop").fadeIn();
+		}
+
+		vm.closeProgressPopup = function () {
+			$(".progress_pop").fadeOut();
+		};
+
+		function updateBetOrders() {
+			if (! vm.applied_bet_orders) {
+				return;
+			}
 			var i = 0, len = vm.bet_orders.length;
 			for (; i < len; i++) {
-				var o = vm.bet_orders[i];
-				if (o.bet_order_id == bet_order.bet_order_id) {
-					$.extend(o, data);
-					break;
+				var o = vm.bet_orders[i], ao,
+					j = 0, j_len = vm.applied_bet_orders.length;
+				for (; j < j_len; j++) {
+					ao = vm.applied_bet_orders[j];
+					if (o.bet_order_id == ao.bet_order_id) {
+						$.extend(o, {
+							deposited: ao.deposited,
+							memo: ao.memo
+						});
+					}
 				}
 			}
 		}
@@ -500,7 +595,7 @@
 		function closeLoading() {
 			$(".waiting").fadeOut();
 		}
-	}]);
+	}
 
 	app.controller("SearchFormCtrl", ["$scope", "username", function ($scope, username) {
 		// View Model
