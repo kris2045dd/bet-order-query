@@ -10,8 +10,10 @@
 		<link rel="stylesheet" href="{{ asset('css/front/main.css') }}" />
 		<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.8/angular.min.js"></script>
+		{{-- 暫時沒用到
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.8/angular-animate.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.8/angular-touch.min.js"></script>
+		--}}
 	</head>
 	<body ng-controller="BodyCtrl as body">
 
@@ -179,7 +181,7 @@
 						<div class="d_list" ng-repeat="o in body.filtered_bet_orders |
 							offset: (body.paginator.current - 1) * body.paginator.per_page |
 							limitTo: body.paginator.per_page
-							track by $id(o.platform + o.bet_order_id)">
+							track by o.bet_order_id">
 							<div>{* ::o.platform *}<span>({* ::o.game_name *})</span></div>
 							<div ng-bind="::o.game_name"></div>
 							<div ng-bind="::o.bet_order_id"></div>
@@ -314,7 +316,7 @@
 
 						<div class="d_default" ng-show="body.progress_msg == 'no data'">尚未有申请办理的注单</div>
 
-						<div class="d_list" ng-repeat="o in body.applied_bet_orders track by $id(o.platform + o.bet_order_id)">
+						<div class="d_list" ng-repeat="o in body.applied_bet_orders track by o.bet_order_id">
 							<div ng-bind="::o.bet_order_id"></div>
 							<div ng-bind="::o.activity_name"></div>
 							<div ng-bind="o.deposited | depositedStatus"></div>

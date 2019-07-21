@@ -52,6 +52,9 @@ return [
             'prefix' => '',
             'strict' => false,	// Haima: 防止新增 & 更新時 Column cannot be null (有預設值)
             'engine' => null,
+            'options' => [
+                PDO::ATTR_STRINGIFY_FETCHES => true,	// Convert numeric values to strings when fetching. (注單號大於 JS Number.MAX_SAFE_INTEGER (9007199254740991))
+            ],
         ],
 
         'pgsql' => [
