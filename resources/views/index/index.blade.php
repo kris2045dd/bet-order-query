@@ -152,15 +152,17 @@
 						</div>
 					</form>{{-- form END --}}
 
-
+					
+					{{-- 加上notShowBonus则不出现可获彩金 --}}
 					<div class="data_table style1">
 						<div class="d_t">
 							<div>平台<span>(游戏)</span></div>
 							<div>游戏名称</div>
 							<div>注单号</div>
-							<div>下注时间</div>
-							<div><span>下注</span>金额</div>
+							<div>投注时间</div>
+							<div><span>投注</span>金额</div>
 							<div>派彩金额</div>
+							<div><span>可获</span>彩金</div>
 							<div>一键办理</div>
 						</div>
 
@@ -181,13 +183,14 @@
 						<div class="d_list" ng-repeat="o in body.filtered_bet_orders |
 							offset: (body.paginator.current - 1) * body.paginator.per_page |
 							limitTo: body.paginator.per_page
-							track by o.bet_order_id">
+							track by o.bet_order_id" ng-cloak>
 							<div>{* ::o.platform *}<span>({* ::o.game_name *})</span></div>
 							<div ng-bind="::o.game_name"></div>
 							<div ng-bind="::o.bet_order_id"></div>
 							<div ng-bind="::o.bet_time"></div>
 							<div ng-bind="::o.bet_amount"></div>
 							<div ng-bind="::o.payout_amount"></div>
+							<div></div>
 							<div class="regs">
 								<a href="javascript:void(0)"
 									ng-if="body.applicable(o)"

@@ -841,6 +841,7 @@ body
 				width: 120px
 				+rwd(pad)
 					flex: 1
+					width: auto
 				span
 					display: none
 					+rwd(pad)
@@ -848,7 +849,7 @@ body
 
 			&:nth-child(2)
 				flex: none
-				width: 160px
+				width: 130px
 				+rwd(pad)
 					display: none
 					
@@ -857,31 +858,45 @@ body
 				width: 180px
 				+rwd(pad)
 					flex: 1
+					width: auto
 
 			&:nth-child(4)
 				flex: none
-				width: 220px
+				width: 200px
 				+rwd(pad)
 					display: none
 
 			&:nth-child(5)
 				+rwd(pad)
-					flex: none
-					width: 40px
-				span
-					display: inline
-					+rwd(pad)
-						display: none
+					display: none
 						
-
 			&:nth-child(6)
 				+rwd(pad)
 					display: none
 
 			&:nth-child(7)
+				span
+					display: inline
+					+rwd(pad)
+						display: none
 				+rwd(pad)
 					flex: none
-					width: 55px
+					width: 18vw
+
+			&:nth-child(8)
+				flex: none
+				width: 170px
+				+rwd(pad)
+					flex: none
+					width: 20vw
+
+	&.notShowBonus
+		.d_t,.d_list
+			div
+				&:nth-child(7)
+					display: none
+					
+
 
 
 
