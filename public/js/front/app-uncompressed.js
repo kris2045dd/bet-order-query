@@ -182,7 +182,7 @@
 				activities = response.data.data;
 			});
 
-		this.getMatched = function (bet_order) {
+		this.markMatched = function (bet_order) {
 			var i = 0, len = activities.length;
 			for (; i < len; i++) {
 				var activity_class = manager["activity" + activities[i].activity_id];
@@ -192,11 +192,15 @@
 				var j = 0; j_len = activities[i].rules.length;
 				for (; j < j_len; j++) {
 					if (activity_class.isMatch(bet_order, activities[i].rules[j])) {
-						return activities[i].activity_id;
+						var bonus = activity_class.getBonus(bet_order, activities[i].rules[j]);
+						bet_order.matched = activities[i].activity_id;
+						bet_order.bonus = parseFloat(bonus.toFixed(2));
+						return;
 					}
 				}
 			}
-			return 0;
+			bet_order.matched = 0;
+			bet_order.bonus = "";
 		};
 
 		/*
@@ -219,6 +223,15 @@
 					return true;
 				}
 				return false;
+			};
+
+			this.getBonus = function (bet_order, rule) {
+				var r = rule.split("|"), bonus;
+				bonus = bet_order.bet_amount * r[1];
+				if (bonus > r[2]) {
+					bonus = r[2];
+				}
+				return bonus;
 			};
 		}
 
@@ -245,6 +258,15 @@
 					return true;
 				}
 				return false;
+			};
+
+			this.getBonus = function (bet_order, rule) {
+				var r = rule.split("|"), bonus;
+				bonus = bet_order.bet_amount * r[1];
+				if (bonus > r[2]) {
+					bonus = r[2];
+				}
+				return bonus;
 			};
 		}
 
@@ -276,6 +298,15 @@
 				}
 				return false;
 			};
+
+			this.getBonus = function (bet_order, rule) {
+				var r = rule.split("|"), bonus;
+				bonus = bet_order.bet_amount * r[1];
+				if (bonus > r[2]) {
+					bonus = r[2];
+				}
+				return bonus;
+			};
 		}
 
 		/*
@@ -302,6 +333,12 @@
 				}
 				return false;
 			};
+
+			this.getBonus = function (bet_order, rule) {
+				var r = rule.split("|"), bonus;
+				bonus = r[1];
+				return bonus;
+			};
 		}
 	}
 
@@ -314,11 +351,12 @@
 		"amountGreaterThanFilter",
 		"matchedOnlyFilter",
 		"targetDateFilter",
+		"orderByFilter",
 		"activityService",
 		"username",
 		"BASE_URI"
 	];
-	function BodyCtrl($scope, $http, platformFilter, tailNoFilter, amountGreaterThanFilter, matchedOnlyFilter, targetDateFilter, activityService, username, BASE_URI) {
+	function BodyCtrl($scope, $http, platformFilter, tailNoFilter, amountGreaterThanFilter, matchedOnlyFilter, targetDateFilter, orderByFilter, activityService, username, BASE_URI) {
 		// View Model
 		var vm = this;
 
@@ -344,6 +382,10 @@
 			{label:moment().format("YYYY-MM-DD"), val:moment().format("YYYY-MM-DD")},
 			{label:moment().subtract(1, "days").format("YYYY-MM-DD"), val:moment().subtract(1, "days").format("YYYY-MM-DD")}
 		];
+		vm.order_by = {
+			column: "bonus",
+			reverse: true
+		};
 
 		function filterBetOrders() {
 			var filtered_bet_orders = matchedOnlyFilter(vm.bet_orders, vm.qs.matched);
@@ -351,6 +393,9 @@
 			filtered_bet_orders = tailNoFilter(filtered_bet_orders, vm.qs.tail_no);
 			filtered_bet_orders = platformFilter(filtered_bet_orders, vm.qs.platform);
 			filtered_bet_orders = amountGreaterThanFilter(filtered_bet_orders, vm.qs.amount);
+			if (vm.qs.matched == "all") {
+				filtered_bet_orders = orderByFilter(filtered_bet_orders, vm.order_by.column, vm.order_by.reverse);
+			}
 			vm.filtered_bet_orders = filtered_bet_orders;
 		}
 
@@ -436,7 +481,7 @@
 		function markMatchedOrder() {
 			var i = 0, len = vm.bet_orders.length;
 			for (; i < len; i++) {
-				vm.bet_orders[i].matched = activityService.getMatched(vm.bet_orders[i]);
+				activityService.markMatched(vm.bet_orders[i]);
 			}
 		}
 

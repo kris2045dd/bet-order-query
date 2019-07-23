@@ -152,9 +152,9 @@
 						</div>
 					</form>{{-- form END --}}
 
-					
-					{{-- 加上notShowBonus则不出现可获彩金 --}}
-					<div class="data_table style1">
+
+					{{-- class 加上 notShowBonus 則不出現"可獲彩金"欄位 --}}
+					<div class="data_table style1" ng-class="{notShowBonus:(body.qs.matched == '4')}">
 						<div class="d_t">
 							<div>平台<span>(游戏)</span></div>
 							<div>游戏名称</div>
@@ -190,7 +190,7 @@
 							<div ng-bind="::o.bet_time"></div>
 							<div ng-bind="::o.bet_amount"></div>
 							<div ng-bind="::o.payout_amount"></div>
-							<div></div>
+							<div ng-bind="::o.bonus"></div>
 							<div class="regs">
 								<a href="javascript:void(0)"
 									ng-if="body.applicable(o)"
@@ -336,7 +336,7 @@
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
 		<script src="{{ asset('js/front/ui-bootstrap-tpls-2.5.0.min.js') }}"></script>
 		<script src="{{ asset('js/front/index.js') }}"></script>
-		<script src="{{ asset('js/front/app.js?v=1.1.1') }}"></script>
+		<script src="{{ asset('js/front/app.js?v=1.2') }}"></script>
 		<script>
 		{{-- Angular - Setting --}}
 		angular.module("jsApp")
