@@ -194,7 +194,7 @@
 					if (activity_class.isMatch(bet_order, activities[i].rules[j])) {
 						var bonus = activity_class.getBonus(bet_order, activities[i].rules[j]);
 						bet_order.matched = activities[i].activity_id;
-						bet_order.bonus = parseFloat(bonus.toFixed(2));
+						bet_order.bonus = parseFloat(parseFloat(bonus).toFixed(2));
 						return;
 					}
 				}
