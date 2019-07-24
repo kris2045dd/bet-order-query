@@ -120,6 +120,7 @@ class BetOrderApplyController extends Controller
 				['' => '全部'],
 				$deposited_table
 			));
+			$filter->between('created_at', '申请日期')->datetime();
 		});
 		// 關閉新建按鈕
 		$grid->disableCreateButton();
@@ -164,6 +165,7 @@ class BetOrderApplyController extends Controller
 		$grid->column('memo', '备注')->display(function ($memo) {
 			return str_limit($memo, 16, ' ...');
 		})->editable('textarea');
+		//$grid->column('created_at', '申请日期');
 
         return $grid;
     }
@@ -240,6 +242,7 @@ class BetOrderApplyController extends Controller
         $form->currency('bonus', '彩金')->attribute(['readonly' => 'readonly']);
         $form->select('deposited', '派彩状态')->options($deposited_table);
         $form->textarea('memo', '备注');
+        $form->datetime('created_at', '申请日期')->default(date('Y-m-d H:i:s'))->readonly();
 
         return $form;
     }

@@ -108,6 +108,8 @@ RULE_DESC;
 			if (count($s['bet_order_ids']) >= 1) {
 				throw new \Exception('超过申请上限. (当日有效投注 1元+ 可申请一次)');
 			}
+		} else {
+			throw new \Exception('当日有效投注须达 1元+ 方可申请.');
 		}
 
 		if (in_array($bet_order_id, $s['bet_order_ids'])) {
@@ -147,7 +149,7 @@ RULE_DESC;
 			FROM d_bet_order_apply
 			WHERE
 				username =:username
-				AND bet_time BETWEEN :from_date AND :to_date
+				AND created_at BETWEEN :from_date AND :to_date
 				AND activity_id =4
 				AND deposited IN (" . \App\Models\DBetOrderApply::DEPOSITED_DEFAULT . ", " . \App\Models\DBetOrderApply::DEPOSITED_SUCCESS .")";
 		$rows = \Illuminate\Support\Facades\DB::select($sql, [

@@ -336,7 +336,7 @@
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
 		<script src="{{ asset('js/front/ui-bootstrap-tpls-2.5.0.min.js') }}"></script>
 		<script src="{{ asset('js/front/index.js') }}"></script>
-		<script src="{{ asset('js/front/app.js?v=1.2.1') }}"></script>
+		<script src="{{ asset('js/front/app.js?v=1.2.2') }}"></script>
 		<script>
 		{{-- Angular - Setting --}}
 		angular.module("jsApp")
