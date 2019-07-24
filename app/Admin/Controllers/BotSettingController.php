@@ -103,7 +103,7 @@ class BotSettingController extends Controller
 		$grid->column('api_url', 'API URL');
 		$grid->column('login_url', '登录 URL');
 		$grid->column('login_account', '登录帐号');
-		$grid->column('login_password', '登录密码');
+		//$grid->column('login_password', '登录密码');
 		$grid->column('auto_deposit', '自动派彩')->switch([
 			'on'  => ['value' => 1, 'text' => '是', 'color' => 'primary'],
 			'off' => ['value' => 0, 'text' => '否', 'color' => 'default'],
@@ -169,7 +169,7 @@ class BotSettingController extends Controller
         $form->url('api_url', 'API URL');
         $form->url('login_url', '登录 URL')->help('重要: 网址最后要加斜线 &quot;/&quot;');
         $form->text('login_account', '登录帐号');
-        $form->text('login_password', '登录密码');
+        $form->password('login_password', '登录密码');
         $form->switch('auto_deposit', '自动派彩')->states([
 			'on'  => ['value' => 1, 'text' => '是', 'color' => 'primary'],
 			'off' => ['value' => 0, 'text' => '否', 'color' => 'default'],
