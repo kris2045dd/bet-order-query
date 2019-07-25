@@ -73,6 +73,9 @@ RULE_DESC;
 			return ['matched' => 0, 'bonus' => 0];
 		}
 
+		// 是否可以申請
+		$this->canApply($bet_order);
+
 		// 計算獎金
 		$bonus = $bet_order->bet_amount * $times;
 		if ($bonus > $bonus_ceiling) {
@@ -80,6 +83,24 @@ RULE_DESC;
 		}
 
 		return ['matched' => 1, 'bonus' => $bonus];
+	}
+
+	/*
+		是否可以申請
+	*/
+	protected function canApply(\App\Models\DBetOrder $bet_order)
+	{
+		$today = date('Y-m-d');
+
+		// 計算今日申請過的注單
+		$count = \App\Models\DBetOrderApply::where('username', '=', $bet_order->username)
+			->where('activity_id', '=', '1')
+			->whereDate('created_at', $today)
+			->count();
+
+		if ($count >= 1) {
+			throw new \Exception('电子五重曲 每位会员每天仅限申请一次.');
+		}
 	}
 
 }
