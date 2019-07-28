@@ -91,6 +91,7 @@
 						<select id="game_palt" ng-model="body.qs.platform">
 							<option value="">全部平台</option>
 							<option value="BB电子">BB电子</option>
+							<option value="BBII电子">BBII电子</option>
 							<option value="MG电子">MG电子</option>
 							<option value="GNS电子">GNS电子</option>
 							<option value="ISB电子">ISB电子</option>
@@ -336,7 +337,7 @@
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
 		<script src="{{ asset('js/front/ui-bootstrap-tpls-2.5.0.min.js') }}"></script>
 		<script src="{{ asset('js/front/index.js') }}"></script>
-		<script src="{{ asset('js/front/app.js?v=1.2.2') }}"></script>
+		<script src="{{ asset('js/front/app.js?v=1.3') }}"></script>
 		<script>
 		{{-- Angular - Setting --}}
 		angular.module("jsApp")

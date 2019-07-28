@@ -174,7 +174,8 @@
 				activity1: new Activity1(),
 				activity2: new Activity2(),
 				activity3: new Activity3(),
-				activity4: new Activity4()
+				activity4: new Activity4(),
+				activity5: new Activity5()
 			};
 
 		$http.get(BASE_URI + "/getActivities")
@@ -341,6 +342,38 @@
 				bonus = r[1];
 				return bonus;
 				*/
+			};
+		}
+
+		/*
+			電子四重曲 - 盈利加贈
+
+			參與遊戲: BB電子、BBII電子
+		*/
+		function Activity5() {
+			this.isMatch = function (bet_order, rule) {
+				// BB電子 & BBII電子 限定
+				if (bet_order.platform!="BB电子" && bet_order.platform!="BBII电子") {
+					return false;
+				}
+				// 免費遊戲的注單，不參與活動 (至少 1 元)
+				if (bet_order.bet_amount < 1) {
+					return false;
+				}
+				// 派彩金額 <= 0
+				if (bet_order.payout_amount <= 0) {
+					return false;
+				}
+				if (bet_order.payout_amount >= parseInt(rule.split("|")[0], 10)) {
+					return true;
+				}
+				return false;
+			};
+
+			this.getBonus = function (bet_order, rule) {
+				var r = rule.split("|"), bonus;
+				bonus = r[1];
+				return bonus;
 			};
 		}
 	}

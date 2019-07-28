@@ -251,6 +251,8 @@ class BetOrderApplyController extends Controller
 	protected function getActivityOptions()
 	{
 		$rows = \App\Models\MActivity::select('activity_id', 'name')
+			->orderBy('sort', 'ASC')
+			->orderBy('activity_id', 'ASC')
 			->get()
 			->toArray();
 		return array_column($rows, 'name', 'activity_id');
@@ -264,8 +266,8 @@ class BetOrderApplyController extends Controller
 				ar.activity_rule_id,
 				" . ($with_activity_name ? "CONCAT(ar.name, ' (', a.name, ')') AS name" : "ar.name") . "
 			FROM m_activity_rule AS ar
-				" . ($with_activity_name ? "LEFT JOIN m_activity AS a USING(activity_id)" : "") . "
-			ORDER BY ar.activity_id ASC, ar.`order` ASC";
+				LEFT JOIN m_activity AS a USING(activity_id)
+			ORDER BY a.sort ASC, a.activity_id ASC, ar.`order` ASC";
 		$rows = \Illuminate\Support\Facades\DB::select($sql);
 		return array_column($rows, 'name', 'activity_rule_id');
 	}

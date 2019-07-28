@@ -81,6 +81,9 @@ class ActivityController extends Controller
     {
         $grid = new Grid(new MActivity);
 
+		// 照 排序 順序
+		$grid->model()->orderBy('sort', 'ASC')->orderBy('activity_id', 'ASC');
+
 		// 關閉選擇器
 		$grid->disableRowSelector();
 		// 關閉篩選器
@@ -99,12 +102,13 @@ class ActivityController extends Controller
 			$actions->disableDelete();
 		});
 
-		$grid->column('activity_id', '编号');
+		//$grid->column('activity_id', '编号');
 		$grid->column('name', '名称');
 		$grid->column('disabled', '禁用')->switch([
 			'on'  => ['value' => 1, 'text' => '是', 'color' => 'primary'],
 			'off' => ['value' => 0, 'text' => '否', 'color' => 'default'],
 		]);
+		$grid->column('sort', '排序')->editable();
 		$grid->column('created_at', '建立日期');
 		$grid->column('updated_at', '更新日期');
 
@@ -166,6 +170,7 @@ class ActivityController extends Controller
 				'on'  => ['value' => 1, 'text' => '是', 'color' => 'primary'],
 				'off' => ['value' => 0, 'text' => '否', 'color' => 'default'],
 			]);
+			$form->number('sort', '排序')->min(0)->max(255)->rules('between:0,255');
 		})->tab('規則設定', function ($form) use ($id) {
 			$activity_class = '\App\Activities\Activity' . $id;
 			if (class_exists($activity_class)) {
