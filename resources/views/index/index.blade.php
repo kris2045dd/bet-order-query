@@ -127,6 +127,7 @@
 							<select ng-model="body.qs.matched">
 								<option value="">所有注单</option>
 								<option value="all">所有中奖注单</option>
+								<option value="5">电子四重曲</option>
 								<option value="1">电子五重曲</option>
 								<option value="2">电子六重曲</option>
 								<option value="3">畅玩棋牌 - 第 2 惠</option>
