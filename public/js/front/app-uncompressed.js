@@ -134,12 +134,12 @@
 
 	app.filter("appliedStatus", function () {
 		return function (deposited) {
-			switch (deposited) {
-				case 0:
+			switch (deposited + "") {
+				case "0":
 					return "进度查询";
-				case 1:
+				case "1":
 					return "已派彩";
-				case 2:
+				case "2":
 					return "拒绝";
 				default:
 					return "一键办理";
@@ -149,10 +149,10 @@
 
 	app.filter("depositedStatus", function () {
 		return function (deposited) {
-			switch (deposited) {
-				case 1:
+			switch (deposited + "") {
+				case "1":
 					return "已派彩";
-				case 2:
+				case "2":
 					return "拒绝";
 				default:
 					return "申请中";
