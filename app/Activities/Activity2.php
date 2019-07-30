@@ -4,7 +4,7 @@ namespace App\Activities;
 
 /**
 	電子六重曲 - 畅享赔率彩金
-	註: BBIN電子不參與此項優惠
+	註: BBIN電子 & BBII電子 不參與此項優惠
 
 	參考:
 		https://www.7092004.com:6899/
