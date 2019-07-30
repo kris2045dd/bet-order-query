@@ -7,6 +7,7 @@ namespace App\Activities;
 	註: BBIN電子不參與此項優惠
 
 	參考:
+		https://www.7092004.com:6899/
 		http://7182004.com/
 */
 class Activity2 extends ActivityBase
@@ -54,8 +55,8 @@ RULE_DESC;
 	*/
 	public function match(\App\Models\DBetOrder $bet_order, \App\Models\MActivityRule $activity_rule)
 	{
-		// BB電子 或 非電子(棋牌) 不參與此項活動
-		if ($bet_order->platform=='BB电子' || strpos($bet_order->platform, '电子')===false) {
+		// BB電子 或 BBII電子 或 非電子(棋牌) 不參與此項活動
+		if ($bet_order->platform=='BB电子' || $bet_order->platform=='BBII电子' || strpos($bet_order->platform, '电子')===false) {
 			return ['matched' => 0, 'bonus' => 0];
 		}
 

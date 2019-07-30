@@ -243,8 +243,8 @@
 		*/
 		function Activity2() {
 			this.isMatch = function (bet_order, rule) {
-				// BB電子 或 非電子(棋牌) 不參與此項活動
-				if (bet_order.platform=="BB电子" || bet_order.platform.indexOf("电子")==-1) {
+				// BB電子 或 BBII電子 或 非電子(棋牌) 不參與此項活動
+				if (bet_order.platform=="BB电子" || bet_order.platform=="BBII电子" || bet_order.platform.indexOf("电子")==-1) {
 					return false;
 				}
 				// 免費遊戲的注單，不參與活動 (至少 1 元)
