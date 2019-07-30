@@ -93,12 +93,12 @@ RULE_DESC;
 	*/
 	protected function canApply(\App\Models\DBetOrder $bet_order)
 	{
-		$today = date('Y-m-d');
+		list($target_date, $target_time) = explode(' ', $bet_order->bet_time);
 
-		// 計算今日申請過的注單
+		// 計算注單遊戲日申請過的注單
 		$count = \App\Models\DBetOrderApply::where('username', '=', $bet_order->username)
 			->where('activity_id', '=', '2')
-			->whereDate('created_at', $today)
+			->whereDate('bet_time', $target_date)
 			->count();
 
 		if ($count >= 1) {

@@ -78,19 +78,19 @@ RULE_DESC;
 			return ['matched' => 0, 'bonus' => 0];
 		}
 
-		$this->isValid($bet_order->bet_order_id, $bet_order->username);
+		$this->isValid($bet_order->bet_order_id, $bet_order->username, $bet_order->bet_time);
 
 		return ['matched' => 1, 'bonus' => $bonus];
 	}
 
 	// 檢查是否超過每日申請上限 & 注單號是否重覆
-	protected function isValid($bet_order_id, $username)
+	protected function isValid($bet_order_id, $username, $bet_time)
 	{
-		if (empty(self::$statistics[$username])) {
-			$this->doStatistic($username);
+		if (empty(self::$statistics[$username][$bet_time])) {
+			$this->doStatistic($username, $bet_time);
 		}
 
-		$s = self::$statistics[$username];
+		$s = self::$statistics[$username][$bet_time];
 
 		if ($s['sum_bet_amount'] >= 1000000) {
 			if (count($s['bet_order_ids']) >= 4) {
@@ -118,16 +118,16 @@ RULE_DESC;
 	}
 
 	// 統計資料
-	protected function doStatistic($username)
+	protected function doStatistic($username, $bet_time)
 	{
-		self::$statistics[$username] = [
-			'sum_bet_amount' => 0,	// 今日投注總額
+		self::$statistics[$username][$bet_time] = [
+			'sum_bet_amount' => 0,	// 注單遊戲日投注總額
 			'bet_order_ids' => [],	// 申請過的注單
 		];
 
-		$today = date('Y-m-d');
+		list($target_date, $target_time) = explode(' ', $bet_time);
 
-		// 計算今日總投注額
+		// 計算 注單遊戲日投注總額
 		$sql =
 			"SELECT IFNULL(SUM(bet_amount), 0) AS sum_bet_amount
 			FROM d_bet_order
@@ -137,28 +137,28 @@ RULE_DESC;
 				AND platform IN ('BB捕鱼大师', 'BB捕鱼达人')";
 		$result = \Illuminate\Support\Facades\DB::select($sql, [
 			'username' => $username,
-			'from_date' => $today . ' 00:00:00',
-			'to_date' => $today . ' 23:59:59',
+			'from_date' => $target_date . ' 00:00:00',
+			'to_date' => $target_date . ' 23:59:59',
 		]);
 
-		self::$statistics[$username]['sum_bet_amount'] = $result[0]->sum_bet_amount;
+		self::$statistics[$username][$bet_time]['sum_bet_amount'] = $result[0]->sum_bet_amount;
 
-		// 計算今日申請過的注單
+		// 計算 注單遊戲日申請過的注單
 		$sql =
 			"SELECT DISTINCT bet_order_id
 			FROM d_bet_order_apply
 			WHERE
 				username =:username
-				AND created_at BETWEEN :from_date AND :to_date
+				AND bet_time BETWEEN :from_date AND :to_date
 				AND activity_id =4
 				AND deposited IN (" . \App\Models\DBetOrderApply::DEPOSITED_DEFAULT . ", " . \App\Models\DBetOrderApply::DEPOSITED_SUCCESS .")";
 		$rows = \Illuminate\Support\Facades\DB::select($sql, [
 			'username' => $username,
-			'from_date' => $today . ' 00:00:00',
-			'to_date' => $today . ' 23:59:59',
+			'from_date' => $target_date . ' 00:00:00',
+			'to_date' => $target_date . ' 23:59:59',
 		]);
 		foreach ($rows as $row) {
-			self::$statistics[$username]['bet_order_ids'][] = $row->bet_order_id;
+			self::$statistics[$username][$bet_time]['bet_order_ids'][] = $row->bet_order_id;
 		}
 	}
 
