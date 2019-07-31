@@ -151,7 +151,7 @@ RULE_DESC;
 				username =:username
 				AND bet_time BETWEEN :from_date AND :to_date
 				AND activity_id =4
-				AND deposited IN (" . \App\Models\DBetOrderApply::DEPOSITED_DEFAULT . ", " . \App\Models\DBetOrderApply::DEPOSITED_SUCCESS .")";
+				AND deposited IN (" . \App\Models\DBetOrderApply::DEPOSITED_DEFAULT . ", " . \App\Models\DBetOrderApply::DEPOSITED_SUCCESS . ", " . \App\Models\DBetOrderApply::DEPOSITED_MANUAL . ")";
 		$rows = \Illuminate\Support\Facades\DB::select($sql, [
 			'username' => $username,
 			'from_date' => $target_date . ' 00:00:00',

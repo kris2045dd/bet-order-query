@@ -153,7 +153,7 @@ class IndexController extends Controller
 				#LIMIT 200";
 			$bet_orders = \Illuminate\Support\Facades\DB::select($sql, [
 				'username' => $member['username'],
-				'bet_time' => date('Y-m-d 00:00:00', strtotime('-2 days')),
+				'bet_time' => date('Y-m-d 00:00:00', strtotime('-1 day')),
 			]);
 
 			$res['error'] = -1;

@@ -170,7 +170,7 @@ class BetOrderApplyController extends Controller
 		$deposited_options = $deposited_table;
 		unset($deposited_options[\App\Models\DBetOrderApply::DEPOSITED_DEFAULT]);
 		unset($deposited_options[\App\Models\DBetOrderApply::DEPOSITED_SUCCESS]);
-		$grid->column('deposited', '審核')->editable('select', $deposited_options);
+		$grid->column('deposited', '审核')->editable('select', $deposited_options);
 		$grid->column('memo', '备注')->display(function ($memo) {
 			return str_limit($memo, 16, ' ...');
 		})->editable('textarea');
@@ -234,8 +234,8 @@ class BetOrderApplyController extends Controller
 			$footer->disableViewCheck();
 			$footer->disableCreatingCheck();
 			$footer->disableEditingCheck();
-			/*
 			$footer->disableSubmit();
+			/*
 			*/
 		});
 
