@@ -249,7 +249,7 @@ class BetOrderApplyController extends Controller
 		$form->select('activity_id', '活动')->options($activity_options)->readonly();
 		$form->select('activity_rule_id', '规则')->options($activity_rule_options)->readonly();
         $form->currency('bonus', '彩金')->attribute(['readonly' => 'readonly']);
-        $form->select('deposited', '派彩状态')->options($deposited_table);
+        $form->select('deposited', '派彩状态')->options($deposited_table)->rules('required', ['派彩状态 不可为空.']);
         $form->textarea('memo', '备注');
         $form->datetime('created_at', '申请日期')->default(date('Y-m-d H:i:s'))->readonly();
 
