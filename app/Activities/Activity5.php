@@ -7,6 +7,7 @@ namespace App\Activities;
 	參與遊戲: BB電子、BBII電子
 
 	參考:
+		https://www.7092004.com:6899/
 		http://7182004.com/
 */
 class Activity5 extends ActivityBase
@@ -69,7 +70,8 @@ RULE_DESC;
 
 		list($winning_amount, $bonus) = explode('|', $activity_rule->rule);
 
-		if ($bet_order->payout_amount < $winning_amount) {
+		// 用 (投注 + 派彩) 計算
+		if (($bet_order->bet_amount + $bet_order->payout_amount) < $winning_amount) {
 			return ['matched' => 0, 'bonus' => 0];
 		}
 
