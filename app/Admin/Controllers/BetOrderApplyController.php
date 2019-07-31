@@ -161,7 +161,16 @@ class BetOrderApplyController extends Controller
 			return "未知 ({$activity_rule_id})";
 		});
 		$grid->column('bonus', '彩金');
-		$grid->column('deposited', '派彩状态')->editable('select', $deposited_table);
+		$grid->column('', '派彩状态')->display(function () use ($deposited_table) {
+			if (isset($deposited_table[$this->deposited])) {
+				return $deposited_table[$this->deposited];
+			}
+			return "未知 ({$this->deposited})";
+		});
+		$deposited_options = $deposited_table;
+		unset($deposited_options[\App\Models\DBetOrderApply::DEPOSITED_DEFAULT]);
+		unset($deposited_options[\App\Models\DBetOrderApply::DEPOSITED_SUCCESS]);
+		$grid->column('deposited', '審核')->editable('select', $deposited_options);
 		$grid->column('memo', '备注')->display(function ($memo) {
 			return str_limit($memo, 16, ' ...');
 		})->editable('textarea');
@@ -298,6 +307,7 @@ class BetOrderApplyController extends Controller
 			\App\Models\DBetOrderApply::DEPOSITED_DEFAULT => '已申请',
 			\App\Models\DBetOrderApply::DEPOSITED_SUCCESS => '已派彩',
 			\App\Models\DBetOrderApply::DEPOSITED_REJECTED => '拒绝',
+			\App\Models\DBetOrderApply::DEPOSITED_MANUAL => '人工派彩',
 		];
 	}
 

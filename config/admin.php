@@ -221,7 +221,10 @@ return [
          * or specific method to path like: get:admin/auth/logs.
          */
         'except' => [
-            'admin/auth/logs*',
+            '*/auth/logs*',
+            // Haima
+            '*/bot/loginState',
+            '*/betOrderApply/getUndepositedCount',
         ],
     ],
 

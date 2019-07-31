@@ -117,6 +117,10 @@ class Bot extends ManagerBase
 			throw new \Exception('注单已拒绝.');
 		}
 
+		if ($bet_order->deposited == \App\Models\DBetOrderApply::DEPOSITED_MANUAL) {
+			throw new \Exception('注单已人工派彩.');
+		}
+
 		$bot_setting = $this->getSettings();
 		$api = rtrim($bot_setting->api_url, '/') . '/deposit';
 		$bot_secret = env('BOT_SECRET', '');
